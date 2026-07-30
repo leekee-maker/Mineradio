@@ -42,6 +42,10 @@ function resolveRcedit(projectDir) {
 
 module.exports = async function afterPack(context) {
   if (context.electronPlatformName !== 'win32') return;
+  if (process.platform !== 'win32') {
+    console.log('  • skipping Windows resource injection on non-Windows build host');
+    return;
+  }
 
   const appName = context.packager.appInfo.productFilename || 'Mineradio';
   const productName = context.packager.appInfo.productName || appName;

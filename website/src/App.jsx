@@ -13,9 +13,9 @@ import {
 } from "@phosphor-icons/react";
 
 const WINDOWS_URL = import.meta.env.VITE_WINDOWS_DOWNLOAD_URL ||
-  "https://github.com/leekee-maker/Mineradio/releases/latest";
+  "/downloads/SelfRadio-2.0.3-Windows-x64-Setup.exe";
 const MAC_URL = import.meta.env.VITE_MAC_DOWNLOAD_URL ||
-  "https://github.com/leekee-maker/Mineradio/releases/latest";
+  "/downloads/SelfRadio-2.0.3-macOS-universal.dmg";
 const ASSET_BASE = import.meta.env.BASE_URL;
 
 const downloads = [
@@ -41,7 +41,7 @@ function DownloadButton({ item, featured }) {
   const Icon = item.icon;
   return (
     <a className={`download-button ${featured ? "is-featured" : ""}`} href={item.href}
-      target="_blank" rel="noreferrer" data-platform={item.id}>
+      download data-platform={item.id}>
       <Icon size={30} weight="fill" aria-hidden="true" />
       <span><strong>{item.label}</strong><small>{item.detail}</small></span>
       <DownloadSimple className="download-arrow" size={22} weight="bold" aria-hidden="true" />
@@ -141,7 +141,7 @@ export function App() {
         <div className="closing-actions">
           {orderedDownloads.map((item) => {
             const Icon = item.icon;
-            return <a key={item.id} href={item.href} target="_blank" rel="noreferrer">
+            return <a key={item.id} href={item.href} download>
               <Icon size={22} weight="fill" />{item.label}
             </a>;
           })}
