@@ -38,22 +38,22 @@
 !include WinMessages.nsh
 
 !ifndef MINERADIO_INSTALL_DIR_NAME
-  !define MINERADIO_INSTALL_DIR_NAME "Mineradio"
+  !define MINERADIO_INSTALL_DIR_NAME "SelfRadio"
 !endif
 !ifndef MINERADIO_INSTALL_DIR_NAME_LOWER
-  !define MINERADIO_INSTALL_DIR_NAME_LOWER "mineradio"
+  !define MINERADIO_INSTALL_DIR_NAME_LOWER "selfradio"
 !endif
 !ifndef MINERADIO_INSTALL_MARKER
   !define MINERADIO_INSTALL_MARKER ".mineradio-install-root"
 !endif
 !ifndef MINERADIO_MARKER_APP_ID
-  !define MINERADIO_MARKER_APP_ID "com.mineradio.desktop"
+  !define MINERADIO_MARKER_APP_ID "com.selfradio.desktop"
 !endif
 !ifndef MINERADIO_INSTALL_BRAND
-  !define MINERADIO_INSTALL_BRAND "MINERADIO"
+  !define MINERADIO_INSTALL_BRAND "SELFRADIO"
 !endif
 !ifndef MINERADIO_INSTALL_TITLE
-  !define MINERADIO_INSTALL_TITLE "Mineradio 安装"
+  !define MINERADIO_INSTALL_TITLE "SelfRadio 安装"
 !endif
 !ifndef MINERADIO_INSTALL_NOTICE
   !define MINERADIO_INSTALL_NOTICE ""
@@ -82,7 +82,7 @@
 !macro customInstall
   FileOpen $0 "$INSTDIR\${MINERADIO_INSTALL_MARKER}" w
   ${IfNot} ${Errors}
-    FileWrite $0 "Mineradio install root$\r$\n"
+    FileWrite $0 "SelfRadio install root$\r$\n"
     FileWrite $0 "appId=${MINERADIO_MARKER_APP_ID}$\r$\n"
     FileClose $0
   ${EndIf}

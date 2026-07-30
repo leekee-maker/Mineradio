@@ -1,21 +1,23 @@
 {
   "name": "mineradio",
-  "productName": "Mineradio",
+  "productName": "SelfRadio",
   "version": "2.0.3",
-  "description": "Windows 沉浸式音乐播放器，融合桌面模式、歌词舞台、粒子视觉和 3D 歌单架。",
-  "author": "Mineradio",
+  "description": "跨平台沉浸式音乐播放器，融合歌词舞台、粒子视觉和 3D 歌单架。",
+  "author": "SelfRadio",
   "license": "GPL-3.0-only",
   "main": "desktop/main.js",
   "private": true,
   "scripts": {
     "start": "electron .",
+    "build:mac": "electron-builder --mac dmg zip",
+    "build:mac:dir": "electron-builder --mac dir",
     "build:win": "electron-builder --win nsis",
     "build:win:dir": "electron-builder --win dir",
     "build:win:internal-beta": "electron-builder --config electron-builder.internal-beta.json --win nsis --publish never"
   },
   "build": {
-    "appId": "com.mineradio.desktop",
-    "productName": "Mineradio",
+    "appId": "com.selfradio.desktop",
+    "productName": "SelfRadio",
     "directories": {
       "output": "dist",
       "buildResources": "build"
@@ -44,9 +46,10 @@
     ],
     "asar": false,
     "win": {
-      "executableName": "Mineradio",
+      "executableName": "SelfRadio",
       "icon": "build/icon.ico",
-      "signAndEditExecutable": false,
+      "signAndEditExecutable": true,
+      "signExecutable": false,
       "target": [
         {
           "target": "nsis",
@@ -56,25 +59,52 @@
         }
       ]
     },
+    "mac": {
+      "icon": "build/icon.png",
+      "category": "public.app-category.music",
+      "minimumSystemVersion": "11.0",
+      "identity": null,
+      "target": [
+        {
+          "target": "dmg",
+          "arch": [
+            "arm64",
+            "x64"
+          ]
+        },
+        {
+          "target": "zip",
+          "arch": [
+            "arm64",
+            "x64"
+          ]
+        }
+      ],
+      "artifactName": "SelfRadio-${version}-macOS-${arch}.${ext}"
+    },
+    "dmg": {
+      "title": "SelfRadio ${version}",
+      "artifactName": "SelfRadio-${version}-macOS-${arch}.${ext}"
+    },
     "nsis": {
       "oneClick": false,
       "perMachine": false,
       "allowToChangeInstallationDirectory": false,
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true,
-      "shortcutName": "Mineradio",
+      "shortcutName": "SelfRadio",
       "installerIcon": "build/icon.ico",
       "uninstallerIcon": "build/icon.ico",
       "installerSidebar": "build/installerSidebar.bmp",
       "uninstallerSidebar": "build/installerSidebar.bmp",
       "installerHeader": "build/installerHeader.bmp",
       "include": "build/installer.nsh",
-      "artifactName": "Mineradio-${version}-Setup.${ext}"
+      "artifactName": "SelfRadio-${version}-Setup.${ext}"
     },
     "publish": [
       {
         "provider": "github",
-        "owner": "XxHuberrr",
+        "owner": "leekee-maker",
         "repo": "Mineradio"
       }
     ]
@@ -82,7 +112,7 @@
   "mineradio": {
     "update": {
       "provider": "github",
-      "owner": "XxHuberrr",
+      "owner": "leekee-maker",
       "repo": "Mineradio",
       "preview": false,
       "preferMirrors": true,

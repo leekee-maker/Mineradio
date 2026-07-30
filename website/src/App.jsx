@@ -65,7 +65,7 @@ export function App() {
     <main>
       <header className="site-header">
         <a className="mini-brand" href="#top" aria-label="SelfRadio 首页">
-          <img src={`${ASSET_BASE}assets/selfradio-icon.png`} alt="" />
+          <img src={`${ASSET_BASE}assets/selfradio-icon-sr.png`} alt="" />
           <Brand />
         </a>
         <nav aria-label="主导航">
@@ -150,7 +150,7 @@ export function App() {
 
       <footer>
         <div className="footer-brand">
-          <img src={`${ASSET_BASE}assets/selfradio-icon.png`} alt="" />
+          <img src={`${ASSET_BASE}assets/selfradio-icon-sr.png`} alt="" />
           <div><Brand /><small>radio.remjdor.cn</small></div>
         </div>
         <p>© 2026 SelfRadio. GPL-3.0 开源软件。</p>
