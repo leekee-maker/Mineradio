@@ -16,6 +16,7 @@ const WINDOWS_URL = import.meta.env.VITE_WINDOWS_DOWNLOAD_URL ||
   "https://github.com/leekee-maker/Mineradio/releases/latest";
 const MAC_URL = import.meta.env.VITE_MAC_DOWNLOAD_URL ||
   "https://github.com/leekee-maker/Mineradio/releases/latest";
+const ASSET_BASE = import.meta.env.BASE_URL;
 
 const downloads = [
   { id: "windows", label: "下载 Windows 版", detail: "Windows 10 / 11 · 64-bit", href: WINDOWS_URL, icon: WindowsLogo },
@@ -64,7 +65,7 @@ export function App() {
     <main>
       <header className="site-header">
         <a className="mini-brand" href="#top" aria-label="SelfRadio 首页">
-          <img src="/assets/selfradio-icon.png" alt="" />
+          <img src={`${ASSET_BASE}assets/selfradio-icon.png`} alt="" />
           <Brand />
         </a>
         <nav aria-label="主导航">
@@ -77,7 +78,7 @@ export function App() {
       </header>
 
       <section className="hero" id="top">
-        <img className="hero-stage" src="/assets/hero-stage.png" alt="" />
+        <img className="hero-stage" src={`${ASSET_BASE}assets/hero-stage.png`} alt="" />
         <div className="hero-content">
           <p className="eyebrow">YOUR PRIVATE VISUAL RADIO</p>
           <h1><Brand /></h1>
@@ -113,7 +114,7 @@ export function App() {
             <span className="window-brand"><Brand /></span>
             <span className="window-controls" aria-hidden="true">—　□　×</span>
           </div>
-          <img src="/assets/selfradio-preview.png" alt="SelfRadio 沉浸式播放器启动界面" />
+          <img src={`${ASSET_BASE}assets/selfradio-preview.png`} alt="SelfRadio 沉浸式播放器启动界面" />
         </div>
         <div className="showcase-copy">
           <p className="eyebrow">沉浸体验</p>
@@ -149,7 +150,7 @@ export function App() {
 
       <footer>
         <div className="footer-brand">
-          <img src="/assets/selfradio-icon.png" alt="" />
+          <img src={`${ASSET_BASE}assets/selfradio-icon.png`} alt="" />
           <div><Brand /><small>radio.remjdor.cn</small></div>
         </div>
         <p>© 2026 SelfRadio. GPL-3.0 开源软件。</p>
