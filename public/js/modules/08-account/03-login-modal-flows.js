@@ -22,10 +22,15 @@ function loginProviderSupportsCookieMode(provider) {
   provider = normalizeLoginProviderKey(provider);
   return provider !== 'spotify';
 }
+function qishuiUsesQrLogin() {
+  return !!(window.desktopWindow && window.desktopWindow.platform !== 'win32');
+}
 function loginProviderOfficialModeText(provider) {
   provider = normalizeLoginProviderKey(provider);
   if (provider === 'spotify') return { title: 'OAuth', sub: '弹出 Spotify 授权窗口' };
-  if (provider === 'qishui') return { title: '本地会话', sub: '读取汽水 PC 登录态' };
+  if (provider === 'qishui') return qishuiUsesQrLogin()
+    ? { title: '扫码', sub: '使用汽水 App 扫码' }
+    : { title: '本地会话', sub: '读取汽水 PC 登录态' };
   if (provider === 'kugou') return { title: '官网', sub: '弹出酷狗官方窗口' };
   return { title: '扫码', sub: '连接后弹出官方窗口' };
 }
@@ -598,9 +603,11 @@ function qishuiPublicSearchReady() {
 }
 function qishuiLoginStatusText(info) {
   info = info || qishuiLoginStatus || {};
-  if (info.webSession) return '已导入本机汽水 PC 登录态 · 可同步我的喜欢、歌单并直接播放';
+  if (info.webSession) return (qishuiUsesQrLogin() ? '汽水扫码登录成功' : '已导入本机汽水 PC 登录态') + ' · 可同步我的喜欢、歌单并直接播放';
   if (info.loggedIn) return '已保存汽水 OpenAPI 授权 · ' + (info.userId || info.playbackMode || '');
-  return '请先在本机汽水音乐 PC 客户端完成登录，再点击“读取本机汽水”';
+  return qishuiUsesQrLogin()
+    ? '点击“扫码登录”，使用汽水音乐 App 扫码确认'
+    : '请先在本机汽水音乐 PC 客户端完成登录，再点击“读取本机汽水”';
 }
 function spotifyLoginStatusText(info) {
   info = info || spotifyLoginStatus || {};
@@ -787,14 +794,16 @@ function updateLoginProviderUi() {
   if (qqBtn) qqBtn.classList.toggle('active', isQQ);
   if (kugouBtn) kugouBtn.classList.toggle('active', isKugou);
   if (qishuiBtn) qishuiBtn.classList.toggle('active', isQishui);
-  if (title) title.textContent = isQishui ? '导入汽水音乐' : ('扫码登录' + meta.label);
+  if (title) title.textContent = isQishui ? (qishuiUsesQrLogin() ? '扫码登录汽水音乐' : '导入汽水音乐') : ('扫码登录' + meta.label);
   if (desc) desc.innerHTML = isQQ
     ? '打开 <b>QQ 音乐官方网页登录窗口</b> 扫码，成功后会自动同步账号会话。'
     : (isKugou
       ? '打开 <b>酷狗音乐官方网页登录窗口</b> 登录，成功后会自动同步账号会话。'
     : (isQishui
       ? (hasQishuiLocalImportBridge
-        ? '读取本机 <b>汽水音乐 PC 客户端</b> 的当前登录态，导入后可同步我的喜欢、歌单并解析播放地址。'
+        ? (qishuiUsesQrLogin()
+          ? '使用 <b>汽水音乐 App</b> 扫码登录，成功后可同步我的喜欢、歌单并解析播放地址。'
+          : '读取本机 <b>汽水音乐 PC 客户端</b> 的当前登录态，导入后可同步我的喜欢、歌单并解析播放地址。')
         : '本地汽水登录态只能由 Mineradio 桌面版读取；请在桌面版中完成导入。')
     : (canOpenNeteaseWeb
       ? '打开 <b>网易云音乐官方网页登录窗口</b> 扫码，避开接口二维码风控；成功后会自动同步账号会话。'
@@ -822,7 +831,7 @@ function updateLoginProviderUi() {
     if (cardMark) cardMark.textContent = isQQ ? 'QQ' : (isKugou ? 'KG' : (isQishui ? 'QS' : 'NE'));
     if (cardLabel) cardLabel.textContent = isQQ
       ? (qqWebLoginBusy ? '等待扫码确认' : (qqLoginStatus.loggedIn ? '重新打开官方窗口同步会员' : '打开官方扫码窗口'))
-      : (isKugou ? (kugouWebLoginBusy ? '等待登录确认' : '打开官方登录窗口') : (isQishui ? (qishuiOAuthBusy ? '正在读取本机会话' : '读取本机汽水') : (neteaseWebLoginBusy ? '等待扫码确认' : '打开官方登录窗口')));
+      : (isKugou ? (kugouWebLoginBusy ? '等待登录确认' : '打开官方登录窗口') : (isQishui ? (qishuiOAuthBusy ? (qishuiUsesQrLogin() ? '等待扫码确认' : '正在读取本机会话') : (qishuiUsesQrLogin() ? '打开汽水扫码' : '读取本机汽水')) : (neteaseWebLoginBusy ? '等待扫码确认' : '打开官方登录窗口')));
   }
   if (st) {
     st.className = isManualCookieProvider ? 'preview' : '';
@@ -838,20 +847,20 @@ function updateLoginProviderUi() {
     refreshBtn.disabled = isQishui ? (qishuiBusy || !canOpenQishuiOfficialWindow) : (isQQ ? !!qqWebLoginBusy : (isKugou ? !!kugouWebLoginBusy : !!neteaseWebLoginBusy));
     var qqNeedsAuthRefresh = isQQ && qqLoginNeedsAuthorizationRefresh(qqLoginStatus);
     var qqNeedsMembershipSync = isQQ && qqLoginStatus.loggedIn && !hasProviderVip('qq', qqLoginStatus);
-    refreshBtn.textContent = isQishui ? (qishuiOAuthBusy ? '正在读取…' : (qishuiTokenBusy ? '保存中…' : '读取本机汽水')) : (isQQ ? (qqWebLoginBusy ? '等待扫码…' : (qqNeedsAuthRefresh ? '重新授权' : (qqNeedsMembershipSync ? '同步会员' : (qqLoginStatus.loggedIn ? '刷新状态' : '扫码登录')))) : (isKugou ? (kugouWebLoginBusy ? '等待登录…' : '登录') : (canOpenNeteaseWeb ? (neteaseWebLoginBusy ? '等待扫码…' : '网页登录') : '刷新二维码')));
+    refreshBtn.textContent = isQishui ? (qishuiOAuthBusy ? (qishuiUsesQrLogin() ? '等待扫码…' : '正在读取…') : (qishuiTokenBusy ? '保存中…' : (qishuiUsesQrLogin() ? '扫码登录' : '读取本机汽水'))) : (isQQ ? (qqWebLoginBusy ? '等待扫码…' : (qqNeedsAuthRefresh ? '重新授权' : (qqNeedsMembershipSync ? '同步会员' : (qqLoginStatus.loggedIn ? '刷新状态' : '扫码登录')))) : (isKugou ? (kugouWebLoginBusy ? '等待登录…' : '登录') : (canOpenNeteaseWeb ? (neteaseWebLoginBusy ? '等待扫码…' : '网页登录') : '刷新二维码')));
     refreshBtn.onclick = isQishui ? openQishuiWebLogin : (isQQ ? ((qqNeedsAuthRefresh || qqNeedsMembershipSync) ? openQQWebLogin : (qqLoginStatus.loggedIn ? refreshQr : openQQWebLogin)) : (isKugou ? openKugouWebLogin : (canOpenNeteaseWeb ? openNeteaseWebLogin : refreshQr)));
   }
   if (isQishui && canOpenQishuiOfficialWindow) {
     if (qqCard) {
       var qishuiCardLabel = qqCard.querySelector('span');
       if (qishuiCardLabel) qishuiCardLabel.textContent = qishuiOAuthBusy
-        ? '正在读取本机会话'
-        : '读取本机汽水';
+        ? (qishuiUsesQrLogin() ? '等待扫码确认' : '正在读取本机会话')
+        : (qishuiUsesQrLogin() ? '打开汽水扫码' : '读取本机汽水');
     }
     if (refreshBtn) {
       refreshBtn.textContent = qishuiOAuthBusy
-        ? '正在读取…'
-        : '读取本机汽水';
+        ? (qishuiUsesQrLogin() ? '等待扫码…' : '正在读取…')
+        : (qishuiUsesQrLogin() ? '扫码登录' : '读取本机汽水');
       refreshBtn.onclick = openQishuiWebLogin;
     }
   }
@@ -1206,17 +1215,17 @@ async function openQishuiWebLogin() {
   var api = window.desktopWindow;
   if (!api || !api.isDesktop || typeof api.openQishuiMusicLogin !== 'function') {
     updateLoginProviderUi();
-    if (statusEl) { statusEl.textContent = '当前环境不能读取本机汽水 PC 登录态，请使用 Mineradio 桌面版。'; statusEl.className = 'fail'; }
+    if (statusEl) { statusEl.textContent = '当前环境不能打开汽水登录，请使用 Mineradio 桌面版。'; statusEl.className = 'fail'; }
     return;
   }
   qishuiOAuthBusy = true;
   updateLoginProviderUi();
-  if (statusEl) { statusEl.textContent = '正在读取本机汽水音乐 PC 客户端登录态…'; statusEl.className = 'preview'; }
+  if (statusEl) { statusEl.textContent = qishuiUsesQrLogin() ? '正在打开汽水音乐扫码登录…' : '正在读取本机汽水音乐 PC 客户端登录态…'; statusEl.className = 'preview'; }
   var failText = '';
   try {
     var result = await api.openQishuiMusicLogin();
     if (!result || !result.ok || !result.cookie || !result.webSession) {
-      throw new Error((result && (result.message || result.error)) || '没有读取到可用的本机汽水登录态');
+      throw new Error((result && (result.message || result.error)) || (qishuiUsesQrLogin() ? '汽水扫码登录未完成' : '没有读取到可用的本机汽水登录态'));
     }
     if (statusEl) { statusEl.textContent = '正在保存本机会话并验证汽水歌单…'; statusEl.className = 'preview'; }
     var info = await apiJson('/api/qishui/login/cookie', {
@@ -1232,13 +1241,13 @@ async function openQishuiWebLogin() {
     renderUserBtn();
     await refreshUserPlaylists(true);
     loadHomeDiscover(true);
-    if (statusEl) { statusEl.textContent = '本机汽水登录态已导入，可同步歌单并直接播放'; statusEl.className = 'scan'; }
+    if (statusEl) { statusEl.textContent = (qishuiUsesQrLogin() ? '汽水扫码登录成功' : '本机汽水登录态已导入') + '，可同步歌单并直接播放'; statusEl.className = 'scan'; }
     setTimeout(function () {
       closeLoginModal();
-      showToast('汽水音乐本机会话已导入');
+      showToast(qishuiUsesQrLogin() ? '汽水音乐登录成功' : '汽水音乐本机会话已导入');
     }, 420);
   } catch (e) {
-    failText = e && e.message ? e.message : '本机汽水登录态导入失败';
+    failText = e && e.message ? e.message : (qishuiUsesQrLogin() ? '汽水扫码登录失败' : '本机汽水登录态导入失败');
     if (statusEl) { statusEl.textContent = failText; statusEl.className = 'fail'; }
   } finally {
     qishuiOAuthBusy = false;

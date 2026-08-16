@@ -176,6 +176,18 @@ renderer.domElement.addEventListener('contextmenu', function (e) {
 //   stage 模式: 鼠标 y > 60% 屏幕高
 //   shift + wheel: 强制滚卡片
 var wheelOverShelf = false;
+var SHELF_WHEEL_STEP_INTERVAL_MS = 220;
+var shelfWheelStepAt = 0;
+var shelfWheelStepDirection = 0;
+function consumeShelfWheelStep(e) {
+  var direction = e && e.deltaY > 0 ? 1 : (e && e.deltaY < 0 ? -1 : 0);
+  if (!direction) return 0;
+  var now = performance.now();
+  if (direction === shelfWheelStepDirection && now - shelfWheelStepAt < SHELF_WHEEL_STEP_INTERVAL_MS) return 0;
+  shelfWheelStepAt = now;
+  shelfWheelStepDirection = direction;
+  return direction;
+}
 renderer.domElement.addEventListener('wheel', function (e) {
   if (isPointerOverUi(e)) return;
   if (!shelfManager || shelfManager.getMode() === 'off') return;
@@ -191,7 +203,8 @@ renderer.domElement.addEventListener('wheel', function (e) {
       var panelScreenHit = !rowHit && !panelHit && cl.screenContainsPanel ? cl.screenContainsPanel(e.clientX, e.clientY) : false;
       if (!rowHit && !panelHit && !panelScreenHit) return;
       e.preventDefault(); e.stopImmediatePropagation();
-      cl.scrollBy(e.deltaY > 0 ? 1 : -1);
+      var wheelStep = consumeShelfWheelStep(e);
+      if (wheelStep) cl.scrollBy(wheelStep);
       return;
     }
   }
@@ -210,7 +223,8 @@ renderer.domElement.addEventListener('wheel', function (e) {
   if (inShelfArea) {
     e.preventDefault();
     e.stopImmediatePropagation();
-    shelfManager.scrollBy(e.deltaY > 0 ? 1 : -1);
+    var wheelStep = consumeShelfWheelStep(e);
+    if (wheelStep) shelfManager.scrollBy(wheelStep);
   }
 }, { passive: false, capture: true });
 

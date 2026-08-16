@@ -409,7 +409,7 @@ window.addEventListener('mousemove', function (e) {
   }
   updateShelfHoverCueFromPointer(e);
   updateShelfCardHoverSelection(e);
-  // 搜索 (上): 顶部 48px 内进入; 已显示时鼠标在 280px 内保留
+  // 搜索仅由顶部“搜索”按钮主动打开；鼠标经过主导航不再触发。
   var saOn = sa.classList.contains('peek');
   var saRect = sa.getBoundingClientRect();
   var searchFocused = document.activeElement === $input;
@@ -417,7 +417,8 @@ window.addEventListener('mousemove', function (e) {
   var uploadTipOpen = !!(uploadTip && uploadTip.classList.contains('show'));
   var uploadImportOpen = typeof isUploadImportActive === 'function' && isUploadImportActive();
   var inSearchPanel = saOn && ex >= saRect.left - 24 && ex <= saRect.right + 24 && ey >= saRect.top - 22 && ey <= saRect.bottom + 42;
-  if (ey < 66 || inSearchPanel || searchFocused || uploadTipOpen || uploadImportOpen) setPeek(sa, true, 'search');
+  var hasPrimaryNavigation = !!document.getElementById('primary-navigation');
+  if ((!hasPrimaryNavigation && ey < 66) || inSearchPanel || searchFocused || uploadTipOpen || uploadImportOpen) setPeek(sa, true, 'search');
   else if ((saOn || isSearchPeekRevealPending()) && !emptyHomeActive) setPeek(sa, false, 'search');
   // 控制台: 右下角触发；一旦面板出现，就按真实面板矩形保留显示
   var fpOn = fp.classList.contains('peek') || fp.classList.contains('show');

@@ -1488,14 +1488,14 @@ function checkQishuiProviderGuard() {
   const qishuiLocalLoginStart = desktopMainText.indexOf('async function openQishuiMusicLoginWindow');
   const qishuiLocalLoginEnd = desktopMainText.indexOf('\nasync function clearQishuiMusicLoginSession', qishuiLocalLoginStart);
   const qishuiLocalLoginText = desktopMainText.slice(qishuiLocalLoginStart, qishuiLocalLoginEnd);
-  if (qishuiLocalLoginStart < 0 || qishuiLocalLoginEnd <= qishuiLocalLoginStart || qishuiLocalLoginText.indexOf('readQishuiOfficialClientCookieHeader()') > qishuiLocalLoginText.indexOf('readSavedQishuiCookieHeader()') || /openQishuiOfficialWebLoginWindow\s*\(/.test(qishuiLocalLoginText) || /createQishuiPcQrLogin\s*\(/.test(qishuiLocalLoginText)) {
-    fail('Qishui normal login route must be strict local-first and must never fall through to QR/OAuth');
+  if (qishuiLocalLoginStart < 0 || qishuiLocalLoginEnd <= qishuiLocalLoginStart || qishuiLocalLoginText.indexOf('readQishuiOfficialClientCookieHeader()') > qishuiLocalLoginText.indexOf('readSavedQishuiCookieHeader()') || !/process\.platform !== 'win32'/.test(qishuiLocalLoginText) || !/openQishuiOfficialWebLoginWindow\s*\(/.test(qishuiLocalLoginText) || /createQishuiPcQrLogin\s*\(/.test(qishuiLocalLoginText)) {
+    fail('Qishui login must use QR on macOS while preserving strict local-first import on Windows');
   }
   if (!/本机汽水会话已导入/.test(accountLogoutText) || !/可同步我的喜欢、歌单并直接播放/.test(accountLogoutText) || /授权: '\s*\+/.test(accountLogoutText) || /OpenAPI token/.test(accountLogoutText)) {
     fail('Qishui account status must describe the imported local PC session without exposing internal ids');
   }
-  if (!/canOpenQishuiOfficialWindow/.test(qishuiLoginText) || !/openQishuiWebLogin/.test(qishuiLoginText) || !/读取本机汽水/.test(qishuiLoginText) || !/本机汽水登录态导入失败/.test(qishuiLoginText) || /扫码连接汽水|汽水扫码连接/.test(qishuiLoginText)) {
-    fail('Qishui login UI must expose only the local SodaMusic session import path');
+  if (!/canOpenQishuiOfficialWindow/.test(qishuiLoginText) || !/openQishuiWebLogin/.test(qishuiLoginText) || !/读取本机汽水/.test(qishuiLoginText) || !/qishuiUsesQrLogin/.test(qishuiLoginText) || !/扫码登录/.test(qishuiLoginText)) {
+    fail('Qishui login UI must expose QR on macOS and local SodaMusic session import on Windows');
   }
   if (!/\/luna\/pc\/me/.test(qishuiText) || !/\/luna\/pc\/user\/playlist/.test(qishuiText) || !/\/luna\/pc\/playlist\/detail/.test(qishuiText) || !/function qishuiPcAppParams/.test(qishuiText) || !/pcApp: true/.test(qishuiText) || !/count: Math\.min\(100/.test(qishuiText) || /\/luna\/pc\/playlist\/detail[\s\S]{0,260}cnt:/.test(qishuiText)) {
     fail('Qishui playlist sync must use PC app APIs with user playlist, count/next_cursor, and LunaPC headers');

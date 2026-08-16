@@ -1,0 +1,132 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="3840" height="1040" viewBox="0 0 3840 1040">
+  <defs>
+    <linearGradient id="board" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#101521"/><stop offset="1" stop-color="#07090F"/></linearGradient>
+    <linearGradient id="brand" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#45D9FF"/><stop offset=".48" stop-color="#9D6BFF"/><stop offset="1" stop-color="#FF4F9D"/></linearGradient>
+    <linearGradient id="brandSoft" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#45D9FF" stop-opacity=".42"/><stop offset="1" stop-color="#FF4F9D" stop-opacity=".18"/></linearGradient>
+    <linearGradient id="coverA" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#00D1FF"/><stop offset=".48" stop-color="#6157FF"/><stop offset="1" stop-color="#FF3F82"/></linearGradient>
+    <linearGradient id="coverB" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#FFC46A"/><stop offset=".5" stop-color="#FF6B8A"/><stop offset="1" stop-color="#6A4CFF"/></linearGradient>
+    <radialGradient id="stage" cx="50%" cy="34%" r="72%"><stop stop-color="#7756FF" stop-opacity=".72"/><stop offset=".55" stop-color="#142947" stop-opacity=".34"/><stop offset="1" stop-color="#090B12" stop-opacity="0"/></radialGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="160%"><feDropShadow dx="0" dy="22" stdDeviation="24" flood-color="#000" flood-opacity=".48"/></filter>
+    <filter id="blur"><feGaussianBlur stdDeviation="26"/></filter>
+    <style>
+      .phone{fill:#0B0E15;stroke:#2C3342;stroke-width:2}.screenTitle{font:700 30px -apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif;fill:#F7F9FF}.h1{font:800 34px -apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif;fill:#fff}.h2{font:700 20px -apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif;fill:#F7F9FF}.body{font:500 15px -apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif;fill:#E6EAF4}.sub{font:500 13px -apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif;fill:#8992A5}.tiny{font:600 11px -apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif;fill:#8992A5;letter-spacing:.4px}.accent{fill:#45D9FF}.card{fill:#151A24;stroke:#2B3342;stroke-width:1}.glass{fill:#18202D;fill-opacity:.84;stroke:#3A4659;stroke-width:1}.divider{stroke:#2A3140;stroke-width:1}.pill{fill:#1A2230;stroke:#364256;stroke-width:1}.label{font:700 12px -apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif;fill:#DCE3F2}.nav{font:600 11px -apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif;fill:#737D91}.navOn{font:700 11px -apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif;fill:#45D9FF}.white{fill:#fff}.muted{fill:#8992A5}.cyan{fill:#45D9FF}.pink{fill:#FF5A9E}.green{fill:#42E682}
+    </style>
+  </defs>
+  <rect width="3840" height="1040" fill="url(#board)"/>
+  <text x="48" y="38" class="tiny" fill="#B8C0D1">SELFRADIO · MOBILE 1.0 · CORE PRODUCT FLOW</text>
+
+  <!-- 01 Home -->
+  <g transform="translate(48 64)" filter="url(#shadow)">
+    <rect width="410" height="900" rx="48" class="phone"/>
+    <text x="28" y="52" class="tiny">9:41</text><text x="326" y="52" class="tiny">5G  ●  97%</text>
+    <text x="28" y="106" class="h1">晚上好</text><circle cx="354" cy="94" r="22" fill="#1E2633"/><text x="347" y="100" class="body">♪</text>
+    <rect x="22" y="132" width="366" height="246" rx="30" fill="url(#coverA)"/>
+    <circle cx="308" cy="202" r="76" fill="#fff" opacity=".12"/><circle cx="323" cy="188" r="34" fill="#fff" opacity=".12"/>
+    <text x="48" y="176" class="tiny" fill="#fff">CONTINUE · QQ 音乐</text><text x="48" y="230" class="h1">私人现场</text><text x="48" y="263" class="body">根据此刻情绪继续播放</text>
+    <rect x="48" y="302" width="96" height="44" rx="22" fill="#fff"/><text x="73" y="330" class="label" fill="#101521">▶ 播放</text>
+    <text x="24" y="426" class="h2">为你准备</text>
+    <rect x="22" y="448" width="176" height="128" rx="22" class="card"/><text x="42" y="484" class="tiny">SCENE</text><text x="42" y="518" class="h2">夜间电台</text><text x="42" y="545" class="sub">柔和 · 免打扰</text><circle cx="164" cy="532" r="18" fill="#45D9FF" opacity=".18"/>
+    <rect x="212" y="448" width="176" height="128" rx="22" class="card"/><text x="232" y="484" class="tiny">DAILY MIX</text><text x="232" y="518" class="h2">今日随心听</text><text x="232" y="545" class="sub">跨平台推荐</text><circle cx="354" cy="532" r="18" fill="#FF5A9E" opacity=".18"/>
+    <text x="24" y="622" class="h2">最近播放</text>
+    <rect x="22" y="642" width="366" height="72" rx="18" class="card"/><rect x="34" y="652" width="52" height="52" rx="14" fill="url(#coverB)"/><text x="104" y="674" class="body">谢谢侬</text><text x="104" y="697" class="sub">陈奕迅 · 网易云</text><text x="352" y="684" class="body">▶</text>
+    <rect x="22" y="730" width="366" height="76" rx="20" class="glass"/><rect x="34" y="742" width="52" height="52" rx="14" fill="url(#coverA)"/><text x="102" y="766" class="body">谢谢侬</text><text x="102" y="788" class="sub">陈奕迅</text><text x="346" y="778" class="body cyan">Ⅱ</text>
+    <line x1="20" y1="824" x2="390" y2="824" class="divider"/><text x="50" y="856" class="navOn">⌂  首页</text><text x="138" y="856" class="nav">⌕  搜索</text><text x="228" y="856" class="nav">♫  音乐库</text><text x="327" y="856" class="nav">⚙  设置</text>
+    <text x="20" y="886" class="tiny">01 · HOME / PRIVATE RADIO</text>
+  </g>
+
+  <!-- 02 Search -->
+  <g transform="translate(516 64)" filter="url(#shadow)">
+    <rect width="410" height="900" rx="48" class="phone"/>
+    <text x="28" y="52" class="tiny">9:41</text><text x="326" y="52" class="tiny">5G  ●  97%</text>
+    <text x="24" y="108" class="screenTitle">搜索</text>
+    <rect x="22" y="132" width="366" height="54" rx="18" class="card"/><text x="42" y="166" class="sub">⌕  搜索歌曲、歌手、专辑或歌单</text>
+    <rect x="22" y="204" width="80" height="36" rx="18" fill="#45D9FF"/><text x="46" y="227" class="label" fill="#0B0E15">全部</text><rect x="110" y="204" width="88" height="36" rx="18" class="pill"/><text x="129" y="227" class="label">QQ音乐</text><rect x="206" y="204" width="80" height="36" rx="18" class="pill"/><text x="222" y="227" class="label">网易云</text><rect x="294" y="204" width="70" height="36" rx="18" class="pill"/><text x="311" y="227" class="label">汽水</text>
+    <text x="24" y="288" class="h2">搜索结果</text><text x="318" y="288" class="sub">共 48 首</text>
+    <g transform="translate(22 312)"><rect width="366" height="82" rx="18" class="card"/><rect x="12" y="12" width="58" height="58" rx="14" fill="url(#coverB)"/><text x="88" y="36" class="body">富士山下</text><text x="88" y="60" class="sub">陈奕迅 · QQ音乐</text><rect x="286" y="24" width="40" height="24" rx="12" fill="#6C4CFF" opacity=".25"/><text x="297" y="41" class="tiny" fill="#C5B7FF">SQ</text><text x="342" y="48" class="body">▶</text></g>
+    <g transform="translate(22 406)"><rect width="366" height="82" rx="18" class="card"/><rect x="12" y="12" width="58" height="58" rx="14" fill="url(#coverA)"/><text x="88" y="36" class="body">爱情转移</text><text x="88" y="60" class="sub">陈奕迅 · 网易云</text><rect x="286" y="24" width="40" height="24" rx="12" fill="#45D9FF" opacity=".18"/><text x="296" y="41" class="tiny" fill="#7AE6FF">Hi-Res</text><text x="342" y="48" class="body">▶</text></g>
+    <g transform="translate(22 500)"><rect width="366" height="82" rx="18" class="card"/><rect x="12" y="12" width="58" height="58" rx="14" fill="#242C3A"/><text x="88" y="36" class="body">十年</text><text x="88" y="60" class="sub">陈奕迅 · 汽水</text><text x="342" y="48" class="body">▶</text></g>
+    <rect x="22" y="730" width="366" height="76" rx="20" class="glass"/><rect x="34" y="742" width="52" height="52" rx="14" fill="url(#coverB)"/><text x="102" y="766" class="body">富士山下</text><text x="102" y="788" class="sub">陈奕迅</text><text x="346" y="778" class="body cyan">▶</text>
+    <line x1="20" y1="824" x2="390" y2="824" class="divider"/><text x="50" y="856" class="nav">⌂  首页</text><text x="138" y="856" class="navOn">⌕  搜索</text><text x="228" y="856" class="nav">♫  音乐库</text><text x="327" y="856" class="nav">⚙  设置</text>
+    <text x="20" y="886" class="tiny">02 · UNIFIED SEARCH</text>
+  </g>
+
+  <!-- 03 Library -->
+  <g transform="translate(984 64)" filter="url(#shadow)">
+    <rect width="410" height="900" rx="48" class="phone"/><text x="28" y="52" class="tiny">9:41</text><text x="326" y="52" class="tiny">5G  ●  97%</text>
+    <text x="24" y="108" class="screenTitle">音乐库</text><rect x="274" y="76" width="52" height="36" rx="18" class="pill"/><text x="291" y="99" class="label">筛选</text><rect x="336" y="76" width="52" height="36" rx="18" class="pill"/><text x="353" y="99" class="label">＋</text>
+    <rect x="22" y="134" width="366" height="46" rx="18" class="card"/><rect x="28" y="140" width="106" height="34" rx="15" fill="#45D9FF"/><text x="51" y="162" class="label" fill="#0B0E15">全部平台</text><text x="161" y="162" class="label">QQ音乐</text><text x="250" y="162" class="label">网易云</text><text x="332" y="162" class="label">汽水</text>
+    <text x="24" y="226" class="h2">快捷入口</text>
+    <rect x="22" y="246" width="112" height="112" rx="22" class="card"/><circle cx="58" cy="282" r="20" fill="#45D9FF" opacity=".18"/><text x="49" y="289" class="body cyan">◷</text><text x="38" y="329" class="label">最近播放</text>
+    <rect x="149" y="246" width="112" height="112" rx="22" class="card"/><circle cx="185" cy="282" r="20" fill="#9D6BFF" opacity=".18"/><text x="177" y="289" class="body">♡</text><text x="166" y="329" class="label">我的喜欢</text>
+    <rect x="276" y="246" width="112" height="112" rx="22" class="card"/><circle cx="312" cy="282" r="20" fill="#FF5A9E" opacity=".18"/><text x="304" y="289" class="body">⇩</text><text x="293" y="329" class="label">本地下载</text>
+    <text x="24" y="408" class="h2">我的歌单</text><text x="328" y="408" class="sub">全部  ›</text>
+    <g transform="translate(22 430)"><rect width="366" height="84" rx="18" class="card"/><rect x="12" y="12" width="60" height="60" rx="15" fill="url(#coverA)"/><text x="90" y="36" class="body">QQ音乐 · 我的喜欢</text><text x="90" y="61" class="sub">29 首 · 刚刚同步</text><text x="338" y="50" class="body">›</text></g>
+    <g transform="translate(22 526)"><rect width="366" height="84" rx="18" class="card"/><rect x="12" y="12" width="60" height="60" rx="15" fill="url(#coverB)"/><text x="90" y="36" class="body">深夜循环</text><text x="90" y="61" class="sub">网易云 · 64 首</text><text x="338" y="50" class="body">›</text></g>
+    <g transform="translate(22 622)"><rect width="366" height="84" rx="18" class="card"/><rect x="12" y="12" width="60" height="60" rx="15" fill="#202939"/><text x="90" y="36" class="body">收藏的现场</text><text x="90" y="61" class="sub">跨平台 · 18 首</text><text x="338" y="50" class="body">›</text></g>
+    <line x1="20" y1="824" x2="390" y2="824" class="divider"/><text x="50" y="856" class="nav">⌂  首页</text><text x="138" y="856" class="nav">⌕  搜索</text><text x="228" y="856" class="navOn">♫  音乐库</text><text x="327" y="856" class="nav">⚙  设置</text><text x="20" y="886" class="tiny">03 · UNIFIED LIBRARY</text>
+  </g>
+
+  <!-- 04 Playlist -->
+  <g transform="translate(1452 64)" filter="url(#shadow)">
+    <rect width="410" height="900" rx="48" class="phone"/><text x="28" y="52" class="tiny">9:41</text><text x="326" y="52" class="tiny">5G  ●  97%</text>
+    <text x="24" y="103" class="body">‹ 音乐库</text><text x="340" y="103" class="body">•••</text>
+    <rect x="24" y="132" width="142" height="142" rx="28" fill="url(#coverB)"/><circle cx="95" cy="203" r="43" fill="#fff" opacity=".12"/><text x="70" y="211" class="h2">LIVE</text>
+    <text x="188" y="164" class="tiny">CROSS-PLATFORM PLAYLIST</text><text x="188" y="204" class="h2">深夜循环</text><text x="188" y="232" class="sub">64 首 · 4 小时 18 分</text><text x="188" y="258" class="sub">QQ 32 · 网易云 24 · 汽水 8</text>
+    <rect x="24" y="300" width="234" height="52" rx="24" fill="#45D9FF"/><text x="90" y="332" class="label" fill="#0B0E15">▶  播放全部</text><rect x="270" y="300" width="54" height="52" rx="24" class="pill"/><text x="288" y="332" class="body">↝</text><rect x="334" y="300" width="54" height="52" rx="24" class="pill"/><text x="352" y="332" class="body">⇩</text>
+    <text x="24" y="398" class="h2">歌曲</text><text x="332" y="398" class="sub">按来源</text>
+    <g transform="translate(24 420)"><text x="0" y="30" class="tiny">01</text><rect x="34" width="52" height="52" rx="13" fill="url(#coverA)"/><text x="102" y="22" class="body">谢谢侬</text><text x="102" y="44" class="sub">陈奕迅</text><rect x="286" y="10" width="42" height="22" rx="11" fill="#45D9FF" opacity=".16"/><text x="297" y="26" class="tiny" fill="#73E4FF">网易</text><text x="347" y="30" class="body">•••</text></g><line x1="24" y1="484" x2="386" y2="484" class="divider"/>
+    <g transform="translate(24 500)"><text x="0" y="30" class="tiny">02</text><rect x="34" width="52" height="52" rx="13" fill="url(#coverB)"/><text x="102" y="22" class="body">富士山下</text><text x="102" y="44" class="sub">陈奕迅</text><rect x="286" y="10" width="42" height="22" rx="11" fill="#9D6BFF" opacity=".2"/><text x="299" y="26" class="tiny" fill="#C6B7FF">QQ</text><text x="347" y="30" class="body">•••</text></g><line x1="24" y1="564" x2="386" y2="564" class="divider"/>
+    <g transform="translate(24 580)"><text x="0" y="30" class="tiny">03</text><rect x="34" width="52" height="52" rx="13" fill="#252D3B"/><text x="102" y="22" class="body">黑夜问白天</text><text x="102" y="44" class="sub">林俊杰</text><rect x="286" y="10" width="42" height="22" rx="11" fill="#FF5A9E" opacity=".18"/><text x="297" y="26" class="tiny" fill="#FF96C3">汽水</text><text x="347" y="30" class="body">•••</text></g>
+    <rect x="22" y="730" width="366" height="76" rx="20" class="glass"/><rect x="34" y="742" width="52" height="52" rx="14" fill="url(#coverA)"/><text x="102" y="766" class="body">谢谢侬</text><text x="102" y="788" class="sub">陈奕迅</text><text x="346" y="778" class="body cyan">Ⅱ</text><text x="20" y="886" class="tiny">04 · PLAYLIST DETAIL</text>
+  </g>
+
+  <!-- 05 Immersive Player -->
+  <g transform="translate(1920 64)" filter="url(#shadow)">
+    <rect width="410" height="900" rx="48" class="phone"/><rect width="410" height="900" rx="48" fill="url(#stage)"/><circle cx="120" cy="248" r="110" fill="#00D1FF" opacity=".16" filter="url(#blur)"/><circle cx="298" cy="326" r="124" fill="#FF3F82" opacity=".15" filter="url(#blur)"/>
+    <text x="28" y="52" class="tiny">9:41</text><text x="326" y="52" class="tiny">5G  ●  97%</text><text x="24" y="102" class="body">⌄</text><text x="164" y="102" class="label">私人现场</text><text x="350" y="102" class="body">•••</text>
+    <rect x="54" y="138" width="302" height="302" rx="38" fill="url(#coverA)"/><circle cx="205" cy="289" r="84" fill="#fff" opacity=".1"/><circle cx="205" cy="289" r="32" fill="#0B0E15" opacity=".75"/><text x="166" y="296" class="h2">MUSE</text>
+    <text x="24" y="486" class="h2">谢谢侬</text><text x="24" y="513" class="sub">陈奕迅 · 网易云</text><rect x="322" y="474" width="66" height="30" rx="15" class="pill"/><text x="340" y="494" class="tiny">Hi-Res</text>
+    <text x="205" y="574" text-anchor="middle" class="sub">感谢永远有歌 · 把心境道破</text><text x="205" y="614" text-anchor="middle" class="h2">哪论动或静 谁也有情</text><rect x="82" y="636" width="246" height="4" rx="2" fill="#283245"/><rect x="82" y="636" width="116" height="4" rx="2" fill="url(#brand)"/>
+    <text x="24" y="664" class="tiny">01:42</text><text x="354" y="664" class="tiny">04:18</text>
+    <text x="74" y="728" class="h2">↶</text><text x="134" y="731" class="h1">◀</text><circle cx="205" cy="716" r="46" fill="#F7F9FF"/><text x="192" y="728" class="h2" fill="#0B0E15">Ⅱ</text><text x="262" y="731" class="h1">▶</text><text x="332" y="728" class="h2">≡</text>
+    <rect x="62" y="782" width="286" height="52" rx="26" class="glass"/><text x="90" y="814" class="label cyan">动效：流光粒子</text><text x="287" y="814" class="label">歌词 ›</text><text x="20" y="886" class="tiny">05 · IMMERSIVE PLAYER</text>
+  </g>
+
+  <!-- 06 Lyrics -->
+  <g transform="translate(2388 64)" filter="url(#shadow)">
+    <rect width="410" height="900" rx="48" class="phone"/><rect width="410" height="900" rx="48" fill="#101521"/><circle cx="205" cy="164" r="150" fill="#634DFF" opacity=".12" filter="url(#blur)"/>
+    <text x="28" y="52" class="tiny">9:41</text><text x="326" y="52" class="tiny">5G  ●  97%</text><text x="24" y="102" class="body">‹ 播放</text><text x="176" y="102" class="label">歌词</text><text x="350" y="102" class="body">•••</text>
+    <text x="24" y="178" class="sub">谢谢侬 · 陈奕迅</text>
+    <text x="24" y="244" class="body" opacity=".46">感谢永远有歌</text><text x="24" y="280" class="body" opacity=".46">把心境道破</text>
+    <text x="24" y="356" class="h1"><tspan fill="#45D9FF">哪论动或静</tspan><tspan fill="#FFFFFF"> 谁也有情</tspan></text><rect x="24" y="374" width="272" height="4" rx="2" fill="#242C3A"/><rect x="24" y="374" width="158" height="4" rx="2" fill="url(#brand)"/>
+    <text x="24" y="430" class="h2" opacity=".72">情绪有它抚摸</text><text x="24" y="468" class="body" opacity=".4">If emotions could be touched</text>
+    <text x="24" y="534" class="body" opacity=".32">仍感谢有歌</text><text x="24" y="570" class="body" opacity=".24">把心境道破</text>
+    <rect x="24" y="646" width="362" height="58" rx="22" class="glass"/><text x="46" y="681" class="label">译文  开</text><text x="160" y="681" class="label">逐字  开</text><text x="274" y="681" class="label">偏移  0.0s</text>
+    <rect x="22" y="730" width="366" height="76" rx="20" class="glass"/><rect x="34" y="742" width="52" height="52" rx="14" fill="url(#coverA)"/><text x="102" y="766" class="body">谢谢侬</text><text x="102" y="788" class="sub">陈奕迅</text><text x="346" y="778" class="body cyan">Ⅱ</text><text x="20" y="886" class="tiny">06 · WORD-SYNCED LYRICS</text>
+  </g>
+
+  <!-- 07 Queue & Source -->
+  <g transform="translate(2856 64)" filter="url(#shadow)">
+    <rect width="410" height="900" rx="48" class="phone"/><text x="28" y="52" class="tiny">9:41</text><text x="326" y="52" class="tiny">5G  ●  97%</text><text x="24" y="104" class="body">‹ 播放</text><text x="156" y="104" class="screenTitle">播放队列</text>
+    <rect x="22" y="132" width="366" height="108" rx="22" fill="url(#brandSoft)" stroke="#49607C"/><text x="42" y="166" class="tiny">SMART SOURCE ROUTER</text><text x="42" y="197" class="h2">自动选择最佳可播音源</text><text x="42" y="222" class="sub">优先会员音质，失败时无感切换</text>
+    <text x="24" y="286" class="h2">正在播放</text>
+    <rect x="22" y="306" width="366" height="92" rx="20" class="card"/><rect x="36" y="322" width="58" height="58" rx="15" fill="url(#coverA)"/><text x="110" y="345" class="body">谢谢侬</text><text x="110" y="372" class="sub">网易云 · Hi-Res</text><text x="346" y="356" class="body cyan">Ⅱ</text>
+    <text x="24" y="442" class="h2">可用音源</text>
+    <rect x="22" y="462" width="366" height="68" rx="18" class="card"/><circle cx="54" cy="496" r="16" fill="#45D9FF" opacity=".2"/><text x="48" y="502" class="label cyan">网</text><text x="82" y="492" class="body">网易云</text><text x="82" y="513" class="sub">Hi-Res · 24bit/96kHz</text><rect x="304" y="482" width="62" height="28" rx="14" fill="#42E682" opacity=".15"/><text x="322" y="501" class="tiny" fill="#63F29A">使用中</text>
+    <rect x="22" y="542" width="366" height="68" rx="18" class="card"/><circle cx="54" cy="576" r="16" fill="#9D6BFF" opacity=".2"/><text x="48" y="582" class="label">Q</text><text x="82" y="572" class="body">QQ音乐</text><text x="82" y="593" class="sub">SQ · 会员可用</text><text x="340" y="582" class="body">›</text>
+    <rect x="22" y="622" width="366" height="68" rx="18" class="card"/><circle cx="54" cy="656" r="16" fill="#FF5A9E" opacity=".2"/><text x="48" y="662" class="label pink">汽</text><text x="82" y="652" class="body">汽水音乐</text><text x="82" y="673" class="sub">高品质 · 可播放</text><text x="340" y="662" class="body">›</text>
+    <rect x="22" y="728" width="366" height="58" rx="20" class="glass"/><text x="42" y="763" class="label">下一首：富士山下</text><text x="346" y="763" class="body">≡</text><text x="20" y="886" class="tiny">07 · QUEUE / SOURCE ROUTER</text>
+  </g>
+
+  <!-- 08 Accounts -->
+  <g transform="translate(3324 64)" filter="url(#shadow)">
+    <rect width="410" height="900" rx="48" class="phone"/><text x="28" y="52" class="tiny">9:41</text><text x="326" y="52" class="tiny">5G  ●  97%</text><text x="24" y="108" class="screenTitle">设置</text>
+    <text x="24" y="154" class="h2">音乐平台</text><text x="24" y="180" class="sub">连接后统一同步歌单、收藏与会员音质</text>
+    <g transform="translate(22 206)"><rect width="366" height="86" rx="20" class="card"/><circle cx="44" cy="43" r="24" fill="#8C6CFF" opacity=".22"/><text x="34" y="50" class="label">QQ</text><text x="84" y="34" class="body">QQ音乐</text><text x="84" y="59" class="sub">Peking Jerry · Cookie 有效</text><text x="293" y="46" class="label green">已连接</text><text x="346" y="48" class="body">›</text></g>
+    <g transform="translate(22 308)"><rect width="366" height="86" rx="20" class="card"/><circle cx="44" cy="43" r="24" fill="#45D9FF" opacity=".18"/><text x="34" y="50" class="label cyan">网</text><text x="84" y="34" class="body">网易云音乐</text><text x="84" y="59" class="sub">扫码或 Cookie 登录</text><rect x="272" y="28" width="76" height="32" rx="16" class="pill"/><text x="293" y="49" class="label">连接</text></g>
+    <g transform="translate(22 410)"><rect width="366" height="86" rx="20" class="card"/><circle cx="44" cy="43" r="24" fill="#FF5A9E" opacity=".18"/><text x="34" y="50" class="label pink">汽</text><text x="84" y="34" class="body">汽水音乐</text><text x="84" y="59" class="sub">APP 授权 / 扫码登录</text><rect x="272" y="28" width="76" height="32" rx="16" class="pill"/><text x="293" y="49" class="label">连接</text></g>
+    <text x="24" y="548" class="h2">播放与体验</text>
+    <rect x="22" y="570" width="366" height="164" rx="22" class="card"/><text x="42" y="606" class="body">默认音质</text><text x="300" y="606" class="sub">自动 ›</text><line x1="42" y1="626" x2="366" y2="626" class="divider"/><text x="42" y="662" class="body">动效质量</text><text x="300" y="662" class="sub">均衡 ›</text><line x1="42" y1="682" x2="366" y2="682" class="divider"/><text x="42" y="718" class="body">移动网络播放</text><rect x="310" y="699" width="48" height="28" rx="14" fill="#45D9FF"/><circle cx="344" cy="713" r="11" fill="#fff"/>
+    <line x1="20" y1="824" x2="390" y2="824" class="divider"/><text x="50" y="856" class="nav">⌂  首页</text><text x="138" y="856" class="nav">⌕  搜索</text><text x="228" y="856" class="nav">♫  音乐库</text><text x="327" y="856" class="navOn">⚙  设置</text><text x="20" y="886" class="tiny">08 · PLATFORM ACCOUNTS</text>
+  </g>
+</svg>

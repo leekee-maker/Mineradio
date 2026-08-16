@@ -62,6 +62,12 @@
       <button id="fullscreen-diy-btn" class="desktop-mode-btn" type="button" onclick="toggleDiyMode()" title="DIY"
         aria-label="DIY" aria-pressed="false">DIY</button>
     </div>
+    <nav id="primary-navigation" aria-label="主导航">
+      <button type="button" class="active" data-nav-key="home" onclick="openPrimaryNavigation('home', this)">主页</button>
+      <button type="button" data-nav-key="search" onclick="openPrimaryNavigation('search', this)">搜索</button>
+      <button type="button" data-nav-key="library" onclick="openPrimaryNavigation('library', this)">音乐库</button>
+      <button type="button" data-nav-key="settings" onclick="openPrimaryNavigation('settings', this)">设置</button>
+    </nav>
     <div id="custom-bg"><video id="custom-bg-video" muted loop playsinline preload="metadata"></video></div>
     <div id="wallpaper-engine-layer" aria-hidden="true">
       <img id="wallpaper-engine-image" alt="">
@@ -246,27 +252,6 @@
               <div id="home-discovery-list" class="home-discovery-list" aria-live="polite"></div>
             </section>
 
-            <button class="home-insight-card home-ranking-entry" type="button" onclick="openHomeDashboardCharts()"
-              aria-label="打开音乐发现">
-              <span class="home-ranking-entry-copy">
-                <span class="home-insight-kicker">DISCOVER · 音乐发现</span>
-                <span class="home-ranking-entry-title">平台热歌与个人偏好</span>
-                <span class="home-ranking-entry-sub">打开平台推荐中心；没有可信推荐接口时会明确留空</span>
-              </span>
-              <span class="home-ranking-entry-art" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>
-              <span class="home-next-arrow" aria-hidden="true">›</span>
-            </button>
-
-            <button class="home-insight-card home-ranking-entry home-radio-entry" type="button"
-              onclick="openHomeDashboardRadio()" aria-label="打开平台推荐">
-              <span class="home-ranking-entry-copy">
-                <span class="home-insight-kicker">PLATFORM PICKS · 平台推荐</span>
-                <span class="home-ranking-entry-title">推荐电台 / 歌单</span>
-                <span class="home-ranking-entry-sub">读取每日歌曲、推荐歌单与推荐 Feed，不用关键词搜索</span>
-              </span>
-              <span class="home-radio-entry-art" aria-hidden="true"><i></i><i></i></span>
-              <span class="home-next-arrow" aria-hidden="true">›</span>
-            </button>
           </div>
 
           <div class="home-legacy-rail" aria-hidden="true">
@@ -277,35 +262,6 @@
         </div>
       </div>
     </section>
-
-    <div id="home-platform-recommend-mask" class="modal-mask" role="dialog" aria-modal="true" aria-hidden="true"
-      aria-labelledby="home-platform-recommend-title">
-      <div class="modal home-platform-recommend-modal">
-        <div class="home-platform-recommend-head">
-          <div>
-            <h2 id="home-platform-recommend-title">平台推荐</h2>
-            <p>只读取平台可验证的推荐数据，不用关键词搜索替代。</p>
-          </div>
-          <button id="home-platform-recommend-close" class="home-platform-recommend-close" type="button"
-            aria-label="关闭平台推荐">×</button>
-        </div>
-        <div id="home-platform-recommend-tabs" class="home-platform-recommend-tabs" role="tablist"
-          aria-label="推荐平台">
-          <button type="button" role="tab" data-home-recommend-source="netease" aria-selected="true">网易云</button>
-          <button type="button" role="tab" data-home-recommend-source="qishui" aria-selected="false">汽水</button>
-          <button type="button" role="tab" data-home-recommend-source="qq" aria-selected="false">QQ</button>
-          <button type="button" role="tab" data-home-recommend-source="kugou" aria-selected="false">酷狗</button>
-          <button type="button" role="tab" data-home-recommend-source="spotify" aria-selected="false">Spotify</button>
-        </div>
-        <div id="home-platform-recommend-status" class="home-platform-recommend-status" role="status"
-          aria-live="polite"></div>
-        <div id="home-platform-recommend-list" class="home-platform-recommend-list"></div>
-        <div class="home-platform-recommend-actions">
-          <button id="home-platform-recommend-refresh" type="button">刷新当前平台</button>
-          <button id="home-platform-recommend-done" type="button">完成</button>
-        </div>
-      </div>
-    </div>
 
     <!-- 顶部右侧 (只保留用户) -->
     <div id="top-right">
@@ -801,7 +757,7 @@
             <div class="fx-toggle" id="t-desktopLyricsHighlight" onclick="toggleFx('desktopLyricsHighlight')"
               title="桌面歌词按播放进度高亮"><span>桌面歌词高亮跟随</span><span class="dot"></span></div>
             <div class="fx-toggle" id="t-wallpaperMode" onclick="toggleFx('wallpaperMode')"
-              title="把当前完整 Mineradio 放到 Windows 桌面；右上控制器可显示、隐藏桌面图标，Esc 退出">
+              title="把当前完整 Mineradio 放到系统桌面；Esc 退出">
               <span>完整桌面模式<em class="fx-dev-badge">试验</em></span><span class="dot"></span></div>
           </div>
           <div class="fx-section-label">桌面 / 壁纸</div>
@@ -819,7 +775,7 @@
             <button data-desktop-lyrics-fps="120">120</button>
             <button data-desktop-lyrics-fps="0">无上限</button>
           </div>
-          <div class="desktop-mode-note">开启后可在右上控制器显示或隐藏 Windows 桌面图标；按 Esc 直接退出。重启默认关闭。</div>
+          <div class="desktop-mode-note">Windows 支持交互桌面；macOS 为点击穿透的动态桌面预览。按 Esc 直接退出，重启默认关闭。</div>
           <div class="fx-section-label" hidden>壁纸帧数</div>
           <div class="fx-seg" id="wallpaper-fps-seg" hidden>
             <button data-wallpaper-fps="24">24</button>
@@ -1381,11 +1337,11 @@
               </div>
             </div>
           </div>
-          <button id="controls-hide-btn" class="ctrl-btn active" onclick="toggleControlsAutoHide()" title="控制条自动隐藏"><svg
+          <button id="controls-hide-btn" class="ctrl-btn active" onclick="toggleControlsAutoHide()" title="固定播放控制条"
+            aria-label="固定播放控制条" aria-pressed="true"><svg
               width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-              <path d="M5 8h14" />
-              <path d="M8 12h8" />
-              <path d="M10 16h4" />
+              <path d="M9 4h6l-1 6 3 3v2H7v-2l3-3-1-6z" />
+              <path d="M12 15v5" />
             </svg></button>
           <button id="immersive-btn" class="ctrl-btn" onclick="toggleImmersiveMode()" title="全沉浸式" aria-label="全沉浸式"
             aria-pressed="false"><svg width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.9"
@@ -1477,7 +1433,7 @@
             <button id="login-provider-kugou" class="kugou workflow-node" type="button" data-login-provider="kugou" onclick="selectLoginProviderNode('kugou')"><span
                 class="provider-logo">KG</span><b>酷狗音乐</b><small>官方窗口 / Cookie</small><span class="flow-port out" data-login-provider-output="kugou" title="拖到 MR 接入口"></span></button>
             <button id="login-provider-qishui" class="qishui workflow-node" type="button" data-login-provider="qishui" onclick="selectLoginProviderNode('qishui')"><span
-                class="provider-logo">QS</span><b>汽水音乐</b><small>本地会话 / PC 客户端</small><span class="flow-port out" data-login-provider-output="qishui" title="拖到 MR 接入口"></span></button>
+                class="provider-logo">QS</span><b>汽水音乐</b><small>扫码 / 本地会话</small><span class="flow-port out" data-login-provider-output="qishui" title="拖到 MR 接入口"></span></button>
             <button id="login-provider-spotify" class="spotify workflow-node" type="button" data-login-provider="spotify" onclick="selectLoginProviderNode('spotify')"><span
                 class="provider-logo">SP</span><b>Spotify</b><small>官方 OAuth</small><span class="flow-port out" data-login-provider-output="spotify" title="拖到 MR 接入口"></span></button>
           </div>

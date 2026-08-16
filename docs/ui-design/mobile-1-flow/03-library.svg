@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="410" height="900" viewBox="0 0 410 900">
+<defs>
+    <linearGradient id="board" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#101521"/><stop offset="1" stop-color="#07090F"/></linearGradient>
+    <linearGradient id="brand" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#45D9FF"/><stop offset=".48" stop-color="#9D6BFF"/><stop offset="1" stop-color="#FF4F9D"/></linearGradient>
+    <linearGradient id="brandSoft" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#45D9FF" stop-opacity=".42"/><stop offset="1" stop-color="#FF4F9D" stop-opacity=".18"/></linearGradient>
+    <linearGradient id="coverA" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#00D1FF"/><stop offset=".48" stop-color="#6157FF"/><stop offset="1" stop-color="#FF3F82"/></linearGradient>
+    <linearGradient id="coverB" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#FFC46A"/><stop offset=".5" stop-color="#FF6B8A"/><stop offset="1" stop-color="#6A4CFF"/></linearGradient>
+    <radialGradient id="stage" cx="50%" cy="34%" r="72%"><stop stop-color="#7756FF" stop-opacity=".72"/><stop offset=".55" stop-color="#142947" stop-opacity=".34"/><stop offset="1" stop-color="#090B12" stop-opacity="0"/></radialGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="160%"><feDropShadow dx="0" dy="22" stdDeviation="24" flood-color="#000" flood-opacity=".48"/></filter>
+    <filter id="blur"><feGaussianBlur stdDeviation="26"/></filter>
+    <style>
+      .phone{fill:#0B0E15;stroke:#2C3342;stroke-width:2}.screenTitle{font:700 30px -apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif;fill:#F7F9FF}.h1{font:800 34px -apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif;fill:#fff}.h2{font:700 20px -apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif;fill:#F7F9FF}.body{font:500 15px -apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif;fill:#E6EAF4}.sub{font:500 13px -apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif;fill:#8992A5}.tiny{font:600 11px -apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif;fill:#8992A5;letter-spacing:.4px}.accent{fill:#45D9FF}.card{fill:#151A24;stroke:#2B3342;stroke-width:1}.glass{fill:#18202D;fill-opacity:.84;stroke:#3A4659;stroke-width:1}.divider{stroke:#2A3140;stroke-width:1}.pill{fill:#1A2230;stroke:#364256;stroke-width:1}.label{font:700 12px -apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif;fill:#DCE3F2}.nav{font:600 11px -apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif;fill:#737D91}.navOn{font:700 11px -apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif;fill:#45D9FF}.white{fill:#fff}.muted{fill:#8992A5}.cyan{fill:#45D9FF}.pink{fill:#FF5A9E}.green{fill:#42E682}
+    </style>
+  </defs>
+<g transform="translate(0 0)" filter="url(#shadow)">
+    <rect width="410" height="900" rx="48" class="phone"/><text x="28" y="52" class="tiny">9:41</text><text x="326" y="52" class="tiny">5G  ●  97%</text>
+    <text x="24" y="108" class="screenTitle">音乐库</text><rect x="274" y="76" width="52" height="36" rx="18" class="pill"/><text x="291" y="99" class="label">筛选</text><rect x="336" y="76" width="52" height="36" rx="18" class="pill"/><text x="353" y="99" class="label">＋</text>
+    <rect x="22" y="134" width="366" height="46" rx="18" class="card"/><rect x="28" y="140" width="106" height="34" rx="15" fill="#45D9FF"/><text x="51" y="162" class="label" fill="#0B0E15">全部平台</text><text x="161" y="162" class="label">QQ音乐</text><text x="250" y="162" class="label">网易云</text><text x="332" y="162" class="label">汽水</text>
+    <text x="24" y="226" class="h2">快捷入口</text>
+    <rect x="22" y="246" width="112" height="112" rx="22" class="card"/><circle cx="58" cy="282" r="20" fill="#45D9FF" opacity=".18"/><text x="49" y="289" class="body cyan">◷</text><text x="38" y="329" class="label">最近播放</text>
+    <rect x="149" y="246" width="112" height="112" rx="22" class="card"/><circle cx="185" cy="282" r="20" fill="#9D6BFF" opacity=".18"/><text x="177" y="289" class="body">♡</text><text x="166" y="329" class="label">我的喜欢</text>
+    <rect x="276" y="246" width="112" height="112" rx="22" class="card"/><circle cx="312" cy="282" r="20" fill="#FF5A9E" opacity=".18"/><text x="304" y="289" class="body">⇩</text><text x="293" y="329" class="label">本地下载</text>
+    <text x="24" y="408" class="h2">我的歌单</text><text x="328" y="408" class="sub">全部  ›</text>
+    <g transform="translate(22 430)"><rect width="366" height="84" rx="18" class="card"/><rect x="12" y="12" width="60" height="60" rx="15" fill="url(#coverA)"/><text x="90" y="36" class="body">QQ音乐 · 我的喜欢</text><text x="90" y="61" class="sub">29 首 · 刚刚同步</text><text x="338" y="50" class="body">›</text></g>
+    <g transform="translate(22 526)"><rect width="366" height="84" rx="18" class="card"/><rect x="12" y="12" width="60" height="60" rx="15" fill="url(#coverB)"/><text x="90" y="36" class="body">深夜循环</text><text x="90" y="61" class="sub">网易云 · 64 首</text><text x="338" y="50" class="body">›</text></g>
+    <g transform="translate(22 622)"><rect width="366" height="84" rx="18" class="card"/><rect x="12" y="12" width="60" height="60" rx="15" fill="#202939"/><text x="90" y="36" class="body">收藏的现场</text><text x="90" y="61" class="sub">跨平台 · 18 首</text><text x="338" y="50" class="body">›</text></g>
+    <line x1="20" y1="824" x2="390" y2="824" class="divider"/><text x="50" y="856" class="nav">⌂  首页</text><text x="138" y="856" class="nav">⌕  搜索</text><text x="228" y="856" class="navOn">♫  音乐库</text><text x="327" y="856" class="nav">⚙  设置</text><text x="20" y="886" class="tiny">03 · UNIFIED LIBRARY</text>
+  </g>
+</svg>

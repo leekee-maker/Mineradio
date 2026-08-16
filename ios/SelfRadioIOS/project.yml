@@ -1,0 +1,36 @@
+name: SelfRadioIOS
+options:
+  bundleIdPrefix: cn.remjdor
+  deploymentTarget:
+    iOS: "17.0"
+settings:
+  base:
+    SWIFT_VERSION: 6.0
+targets:
+  SelfRadioIOS:
+    type: application
+    platform: iOS
+    configFiles:
+      Debug: SelfRadioSecrets.xcconfig
+      Release: SelfRadioSecrets.xcconfig
+    sources: [SelfRadioIOS]
+    resources: [SelfRadioIOS/Assets.xcassets]
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: cn.remjdor.selfradio
+        DEVELOPMENT_TEAM: LPV2RX8PL3
+        CODE_SIGN_STYLE: Automatic
+        CODE_SIGN_IDENTITY: "Apple Development"
+        INFOPLIST_KEY_CFBundleDisplayName: 随心听
+        INFOPLIST_KEY_SelfRadioAPIBaseURL: $(SELF_RADIO_API_BASE_URL)
+        INFOPLIST_KEY_SelfRadioAPIToken: $(SELF_RADIO_API_TOKEN)
+        INFOPLIST_KEY_UILaunchScreen_Generation: YES
+        INFOPLIST_FILE: SelfRadioIOS/Info.plist
+        INFOPLIST_KEY_UISupportedInterfaceOrientations: UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight
+        INFOPLIST_KEY_NSAppTransportSecurity_NSAllowsLocalNetworking: YES
+        INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription: 保存 QQ 音乐登录二维码，便于同一部手机从 QQ 相册识别登录
+        GENERATE_INFOPLIST_FILE: YES
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        TARGETED_DEVICE_FAMILY: "1"
+    scheme:
+      testTargets: []

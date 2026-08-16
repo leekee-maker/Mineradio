@@ -259,6 +259,126 @@ body.desktop-mode-controls-open.desktop-shell.desktop-wallpaper-mode.desktop-wal
   }
 }
 
+/* SelfRadio primary navigation — selected top-navigation direction. */
+#primary-navigation {
+  position: fixed;
+  z-index: 700;
+  top: 0;
+  left: max(28px, calc(var(--desktop-safe-left) + 28px));
+  right: max(350px, calc(var(--desktop-safe-right) + 350px));
+  height: 78px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  border-bottom: 1px solid rgba(255, 255, 255, .08);
+  -webkit-app-region: drag;
+  opacity: 0;
+  transform: translateY(-10px);
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity .22s ease, transform .22s ease, visibility .22s;
+}
+
+#primary-navigation.revealed,
+#primary-navigation:focus-within {
+  opacity: 1;
+  transform: translateY(0);
+  visibility: visible;
+  pointer-events: auto;
+}
+
+#primary-navigation button {
+  position: relative;
+  min-width: 86px;
+  height: 64px;
+  padding: 0 18px;
+  border: 0;
+  color: rgba(255, 255, 255, .58);
+  background: transparent;
+  font: 650 15px/1 inherit;
+  letter-spacing: .02em;
+  cursor: pointer;
+  transition: color .2s ease;
+  -webkit-app-region: no-drag;
+}
+
+#primary-navigation button::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -7px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--home-accent);
+  opacity: 0;
+  transform: scaleX(.4);
+  transition: opacity .2s ease, transform .2s ease;
+}
+
+#primary-navigation button:hover,
+#primary-navigation button:focus-visible,
+#primary-navigation button.active { color: rgba(255, 255, 255, .96); }
+#primary-navigation button.active::after { opacity: 1; transform: scaleX(1); }
+#primary-navigation button:focus-visible { outline: 2px solid rgba(var(--home-accent-rgb), .55); outline-offset: -8px; }
+body.splash-active #primary-navigation,
+body.immersive-mode #primary-navigation { opacity: 0; visibility: hidden; pointer-events: none; }
+
+body.desktop-shell #top-right { top: 16px; }
+body.desktop-shell #empty-home { top: 86px; bottom: 112px; }
+body.desktop-shell #empty-home .empty-home-shell {
+  width: min(1360px, calc(100vw - 64px));
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+body.desktop-shell #empty-home .home-hero,
+body.desktop-shell #empty-home .home-insight-rail { display: none !important; }
+body.desktop-shell #empty-home .home-grid.home-quick-grid {
+  width: 100%;
+  height: min(360px, 56vh);
+  margin: 0;
+  display: grid;
+  grid-template-columns: minmax(320px, 1.65fr) repeat(3, minmax(150px, .72fr));
+  gap: clamp(14px, 2vw, 28px);
+  align-items: center;
+}
+body.desktop-shell #empty-home .home-grid.home-quick-grid .home-card {
+  height: 72%;
+  min-height: 230px;
+  padding: 24px;
+  border-radius: 18px;
+  background: rgba(8, 10, 14, .60);
+  border-color: rgba(255, 255, 255, .10);
+  backdrop-filter: blur(14px);
+}
+body.desktop-shell #empty-home .home-grid.home-quick-grid .home-card-featured {
+  height: 100%;
+  min-height: 330px;
+  padding: 34px;
+}
+body.desktop-shell #empty-home .home-grid.home-quick-grid .home-card-featured .home-card-title {
+  max-width: 9ch;
+  font-size: clamp(34px, 4vw, 58px);
+  line-height: 1.04;
+}
+body.desktop-shell #empty-home .home-grid.home-quick-grid .home-card-quick .home-card-title {
+  font-size: clamp(20px, 2vw, 30px);
+}
+
+#heart-btn, #collect-btn, #play-mode-btn, #cuefield-automix-btn,
+#lyrics-toggle-btn, #controls-hide-btn, #immersive-btn, #time-display { display: none !important; }
+body.desktop-shell #bottom-bar { width: min(1360px, calc(100vw - 64px)); }
+
+@media (max-width: 900px) {
+  #primary-navigation { right: 180px; gap: 2px; }
+  #primary-navigation button { min-width: 74px; padding: 0 14px; font-size: 13px; }
+  body.desktop-shell #empty-home .home-grid.home-quick-grid {
+    grid-template-columns: 1.35fr repeat(3, .72fr);
+    gap: 10px;
+  }
+}
+
 body.desktop-wallpaper-mode #desktop-resize-handles {
   display: none !important;
 }
@@ -17890,6 +18010,80 @@ body.desktop-shell.desktop-wallpaper-mode.diy-mode #bottom-bar.stage-mode {
   left: calc(50% + (var(--desktop-safe-left) - var(--desktop-safe-right)) / 2);
   bottom: calc(var(--desktop-safe-bottom) + 16px);
   width: min(1120px, calc(100vw - var(--desktop-safe-left) - var(--desktop-safe-right) - 48px));
+}
+
+/* Keep the selected SelfRadio layout above legacy responsive rules. */
+body.desktop-shell #top-right {
+  top: 16px;
+  right: max(26px, calc(var(--desktop-safe-right) + 26px));
+}
+body.desktop-shell #empty-home {
+  top: 86px;
+  bottom: 112px;
+}
+body.desktop-shell #empty-home .empty-home-shell {
+  width: min(1360px, calc(100vw - 64px));
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+body.desktop-shell #empty-home .home-hero,
+body.desktop-shell #empty-home .home-insight-rail { display: none !important; }
+body.desktop-shell #empty-home .home-grid.home-quick-grid {
+  width: 100%;
+  height: min(360px, 56vh);
+  margin: 0;
+  display: grid;
+  grid-template-columns: minmax(320px, 1.65fr) repeat(3, minmax(150px, .72fr));
+  gap: clamp(14px, 2vw, 28px);
+  align-items: center;
+}
+body.desktop-shell #empty-home .home-grid.home-quick-grid .home-card {
+  height: 72%;
+  min-height: 230px;
+  padding: 24px;
+  border-radius: 18px;
+  background: rgba(8, 10, 14, .60);
+  border-color: rgba(255, 255, 255, .10);
+  backdrop-filter: blur(14px);
+}
+body.desktop-shell #empty-home .home-grid.home-quick-grid .home-card-featured {
+  height: 100%;
+  min-height: 330px;
+  padding: 34px;
+}
+body.desktop-shell #empty-home .home-grid.home-quick-grid .home-card-featured .home-card-title {
+  max-width: 9ch;
+  font-size: clamp(34px, 4vw, 58px);
+  line-height: 1.04;
+}
+body.desktop-shell #empty-home .home-grid.home-quick-grid .home-card-quick .home-card-title {
+  font-size: clamp(20px, 2vw, 30px);
+}
+body.desktop-shell #bottom-bar,
+body.desktop-shell #bottom-bar.stage-mode,
+body.desktop-shell.simple-mode #bottom-bar,
+body.desktop-shell.diy-mode #bottom-bar {
+  width: min(1360px, calc(100vw - 64px));
+}
+body.desktop-shell.empty-home-active:not(.primary-search-active) #search-area {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+body.desktop-shell:not(.immersive-mode) #controls-hide-btn {
+  display: flex !important;
+}
+
+body.desktop-shell.home-controls-locked #bottom-bar,
+body.desktop-shell.empty-home-active #bottom-bar {
+  opacity: .91 !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+  transform: translateX(-50%) translateY(0) scale(1) !important;
+  background: rgba(0, 0, 0, .18) !important;
+  backdrop-filter: blur(14px) saturate(1.4) !important;
+  -webkit-backdrop-filter: blur(14px) saturate(1.4) !important;
 }
 
 @media (max-width:720px) {

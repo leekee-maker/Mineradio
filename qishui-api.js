@@ -435,10 +435,10 @@ function qishuiQrBoolParam(value, fallback) {
 function qishuiPcQrStatusMessage(status, hasCookie) {
   const key = normalizeText(status).toLowerCase();
   if (hasCookie) return '汽水登录已确认，正在同步歌单';
-  if (!key || key === 'new' || key === 'wait') return '等待汽水音乐 App 扫码';
-  if (/scan|scanned/.test(key)) return '已扫码，等待在汽水音乐 App 内确认';
+  if (!key || key === 'new' || key === 'wait') return '等待抖音 App 扫码';
+  if (/scan|scanned/.test(key)) return '已扫码，等待在抖音 App 内确认';
   if (/confirm|success|login/.test(key)) return '已确认，正在换取汽水登录态';
-  if (/verify|mfa|sms/.test(key)) return '已确认，汽水要求短信验证';
+  if (/verify|mfa|sms/.test(key)) return '已确认，抖音要求短信验证';
   if (/expire/.test(key)) return '二维码已过期，请重新打开汽水授权';
   if (/error|fail/.test(key)) return '扫码状态异常，正在继续确认当前二维码';
   return '等待确认：' + status;
@@ -486,6 +486,27 @@ function qishuiPcQrRedirectUrl(json, data) {
   return '';
 }
 
+async function assertQishuiQrEntryAvailable(qrcodeIndexUrl) {
+  const value = normalizeText(qrcodeIndexUrl);
+  if (!/^https?:\/\//i.test(value)) return;
+  try {
+    await requestTextWithMeta(value, {
+      method: 'GET',
+      timeoutMs: 6000,
+      headers: {
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+        'User-Agent': QISHUI_WEB_UA,
+      },
+    });
+  } catch (e) {
+    const err = new Error('汽水扫码入口当前不可用，请先使用账号导入或稍后重试');
+    err.code = 'QISHUI_QR_ENTRY_UNAVAILABLE';
+    err.statusCode = e && e.statusCode;
+    err.qrcodeIndexUrl = value;
+    throw err;
+  }
+}
+
 async function qishuiResolvePcQrLoginCookie(redirectUrl, cookieText) {
   let currentUrl = normalizeText(redirectUrl);
   let cookie = normalizeQishuiCookieInput(cookieText);
@@ -526,6 +547,7 @@ async function createQishuiPcQrLogin() {
   const token = normalizeText(data.token);
   if (!token) throw new Error('QISHUI_QR_TOKEN_MISSING');
   const qrcodeIndexUrl = data.qrcode_index_url || data.qrcodeIndexUrl || '';
+  await assertQishuiQrEntryAvailable(qrcodeIndexUrl);
   const next = qishuiPcQrNextFromIndexUrl(qrcodeIndexUrl) || QISHUI_PC_FIXED.next;
   const isFrontier = qishuiQrBoolParam(data.is_frontier, QISHUI_PC_FIXED.is_frontier);
   return {
@@ -615,9 +637,11 @@ async function checkQishuiPcQrLogin(token, cookieText, qrOptions) {
   const sessionObj = qishuiCookieObject(loginCookie || baseCookie);
   const sessionid = normalizeText(sessionObj.sessionid || sessionObj.sessionid_ss || sessionObj.sid_guard || sessionObj.sid_tt || '');
   const needsSms = status === 'verify' || errorCode === 2046 || /verify|mfa|sms/.test(accountFlow);
-  const retryAfterMs = errorCode === 7 ? 60000 : 0;
+  const channelRejected = errorCode === 7 && /扫码通道异常|channel/i.test(errorDescription);
+  const retryAfterMs = errorCode === 7 && !channelRejected ? 60000 : 0;
   let message = qishuiPcQrStatusMessage(status, !!loginCookie);
-  if (errorCode === 7) message = '汽水确认接口临时限流，已自动降频继续确认当前二维码';
+  if (channelRejected) message = '扫码通道异常：汽水已拒绝当前桌面登录通道，重新扫码无法恢复';
+  else if (errorCode === 7) message = '汽水确认接口临时限流，已自动降频继续确认当前二维码';
   else if (needsSms) message = '汽水已确认扫码，但账号要求短信或二次验证，当前二维码不能直接换到登录态';
   else if (/confirm|confirmed|success|login/i.test(status) && !loginCookie) message = '汽水已确认扫码，正在等待登录态下发';
   else if (errorCode) message = '汽水扫码返回 error_code=' + errorCode + (errorDescription ? ('：' + errorDescription) : '，保留当前二维码继续确认');
@@ -634,6 +658,7 @@ async function checkQishuiPcQrLogin(token, cookieText, qrOptions) {
     errorDescription,
     accountFlow,
     needsSms,
+    terminal: channelRejected || needsSms || /expire/.test(status),
     retryAfterMs,
     pollCookie: baseCookie,
     redirectUrl: redirectUrl ? true : false,
@@ -3533,6 +3558,8 @@ async function handleQishuiSongUrl(opts, cookieText) {
         vipLabel: membership.vipLabel || (membership.isVip ? 'VIP' : '无VIP'),
         level,
         quality: normalizeText(stream.quality || stream.format || level),
+        format: normalizeText(stream.format || ''),
+        codec: normalizeText(stream.format || ''),
         br: qishuiBitrateForUi(stream.bitrate),
         size: Number(stream.size) || 0,
         duration,

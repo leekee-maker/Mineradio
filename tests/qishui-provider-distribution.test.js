@@ -105,6 +105,56 @@ async function run() {
     assert.strictEqual(second.nextOffset, 8);
   });
 
+  await withHttpsMock(() => ({
+    body: {
+      data: {
+        status: 'new',
+      },
+    },
+  }), async () => {
+    const result = await qishui.checkQishuiPcQrLogin('qr-token', '', {});
+    assert.strictEqual(result.message, '等待抖音 App 扫码', 'the QR flow must name the app required by the upstream passport prompt');
+  });
+
+  await withHttpsMock(({ url }) => {
+    if (url.includes('/passport/web/get_qrcode/')) {
+      return {
+        body: {
+          status_code: 0,
+          message: 'success',
+          data: {
+            token: 'qr-token',
+            qrcode: 'data:image/png;base64,AA==',
+            qrcode_index_url: 'https://bff-pc.qishui.com/ucenter_web/app/sdk-next?token=qr-token',
+          },
+        },
+      };
+    }
+    if (url.includes('bff-pc.qishui.com/ucenter_web/app/sdk-next')) {
+      return { statusCode: 404, body: '<h1>404 not found</h1>' };
+    }
+    throw new Error('Unexpected Qishui QR URL: ' + url);
+  }, async () => {
+    await assert.rejects(
+      () => qishui.createQishuiPcQrLogin(),
+      error => error && error.code === 'QISHUI_QR_ENTRY_UNAVAILABLE',
+      'broken Qishui QR entry URLs must not be returned to the app'
+    );
+  });
+
+  await withHttpsMock(() => ({
+    body: {
+      data: {
+        error_code: 7,
+        description: '扫码通道异常，请稍后重试',
+      },
+    },
+  }), async () => {
+    const result = await qishui.checkQishuiPcQrLogin('qr-token', '', {});
+    assert.strictEqual(result.terminal, true, 'a rejected desktop QR channel must stop polling');
+    assert.match(result.message, /扫码通道异常/, 'the client must receive the upstream channel rejection');
+  });
+
   const desktopMain = fs.readFileSync(path.join(__dirname, '..', 'desktop', 'main.js'), 'utf8');
   const extractorSource = namedFunctionSource(desktopMain, 'extractQishuiCookieHeaderFromCookieDatabase');
   assert(extractorSource, 'the SodaMusic cookie database must have a full-cookie extractor');
@@ -134,8 +184,9 @@ async function run() {
 
   const localImportSource = namedFunctionSource(desktopMain, 'openQishuiMusicLoginWindow');
   assert(localImportSource, 'the desktop Qishui import route must exist');
+  assert(/process\.platform !== 'win32'/.test(localImportSource), 'non-Windows Qishui login must use the QR flow');
+  assert(/openQishuiOfficialWebLoginWindow\s*\(/.test(localImportSource), 'non-Windows Qishui login must open the QR flow');
   assert(localImportSource.indexOf('readQishuiOfficialClientCookieHeader()') < localImportSource.indexOf('readSavedQishuiCookieHeader()'), 'fresh SodaMusic state must be read before the cached Mineradio copy');
-  assert(!/openQishuiOfficialWebLoginWindow\s*\(/.test(localImportSource), 'normal Qishui import must not fall through to QR login');
   assert(!/createQishuiPcQrLogin\s*\(/.test(localImportSource), 'normal Qishui import must not create a QR session');
   assert(/QISHUI_LOCAL_COOKIE_DB_LOCKED/.test(localImportSource));
   assert(/QISHUI_LOCAL_COOKIE_NOT_FOUND/.test(localImportSource));

@@ -108,6 +108,8 @@ const APP_METADATA = APP_PACKAGE_INFO.mineradio || {};
 const APP_NAME = process.env.MINERADIO_RUNTIME_NAME || APP_METADATA.runtimeName || APP_PACKAGE_INFO.productName || 'Mineradio';
 const APP_USER_MODEL_ID = process.env.MINERADIO_APP_USER_MODEL_ID || APP_METADATA.appUserModelId || (APP_PACKAGE_INFO.build && APP_PACKAGE_INFO.build.appId) || 'com.mineradio.desktop';
 const APP_ICON_ICO = path.join(__dirname, '..', 'build', 'icon.ico');
+const APP_ICON_PNG = path.join(__dirname, '..', 'build', 'icon.png');
+const APP_ICON = process.platform === 'win32' ? APP_ICON_ICO : APP_ICON_PNG;
 const CURRENT_FX_AUTOSAVE_FILE = 'current-fx-autosave.json';
 const CURRENT_FX_AUTOSAVE_MAX_BYTES = 12 * 1024 * 1024;
 const STARTUP_ERROR_LOG_FILE = 'startup-error.log';
@@ -489,7 +491,10 @@ function appendChromiumSwitch(name, value) {
   if (value == null) app.commandLine.appendSwitch(name);
   else app.commandLine.appendSwitch(name, value);
 }
-for (const [name, value] of CHROMIUM_SAFE_PERFORMANCE_SWITCHES) appendChromiumSwitch(name, value);
+for (const [name, value] of CHROMIUM_SAFE_PERFORMANCE_SWITCHES) {
+  if (name === 'use-angle' && process.platform !== 'win32') continue;
+  appendChromiumSwitch(name, value);
+}
 for (const [name, value, envName] of CHROMIUM_OPT_IN_PERFORMANCE_SWITCHES) {
   if (process.env[envName] === '1') appendChromiumSwitch(name, value);
 }
@@ -1810,12 +1815,15 @@ function getWindowState(win) {
     displayBounds: null,
   };
   const desktopMode = fullDesktopModeRuntime.getStatus('window-state');
+  const isSimpleFullScreen = process.platform === 'darwin'
+    && typeof win.isSimpleFullScreen === 'function'
+    && win.isSimpleFullScreen();
   return {
     isMaximized: win.isMaximized(),
-    isNativeFullScreen: win.isFullScreen(),
+    isNativeFullScreen: win.isFullScreen() || isSimpleFullScreen,
     isHtmlFullScreen: htmlFullscreenActive,
     isWindowFullScreen: windowFullscreenActive,
-    isFullScreen: win.isFullScreen() || htmlFullscreenActive || windowFullscreenActive,
+    isFullScreen: win.isFullScreen() || isSimpleFullScreen || htmlFullscreenActive || windowFullscreenActive,
     isMinimized: win.isMinimized(),
     isVisible: win.isVisible(),
     isFocused: win.isFocused(),
@@ -1828,6 +1836,16 @@ function getWindowState(win) {
 
 function setMainWindowFullscreenResizeGuard(win, fullscreen) {
   if (!win || win.isDestroyed()) return;
+  // macOS native fullscreen requires a resizable window. Disabling resize
+  // before setFullScreen(true) leaves only our optimistic JS flag enabled.
+  if (process.platform === 'darwin') {
+    try {
+      if (!win.isResizable()) win.setResizable(true);
+    } catch (e) {
+      console.warn('[WindowResizeGuard] macOS fullscreen resize restore', e.message || e);
+    }
+    return;
+  }
   const shouldResize = !fullscreen;
   try {
     if (typeof win.isResizable === 'function' && win.isResizable() === shouldResize) return;
@@ -2030,10 +2048,9 @@ function focusMainWindow() {
 }
 
 function createOrUpdateTray() {
-  if (process.platform !== 'win32' && process.platform !== 'linux') return;
   if (!tray) {
     try {
-      tray = new Tray(APP_ICON_ICO);
+      tray = new Tray(APP_ICON);
       tray.setToolTip(APP_NAME);
       tray.on('click', () => focusMainWindow());
       tray.on('double-click', () => focusMainWindow());
@@ -2257,7 +2274,7 @@ function ensureDesktopShortcut() {
       cwd: path.dirname(target),
       args: '',
       description: `${APP_NAME} desktop music player`,
-      icon: fs.existsSync(APP_ICON_ICO) ? APP_ICON_ICO : target,
+      icon: fs.existsSync(APP_ICON) ? APP_ICON : target,
       iconIndex: 0,
       appUserModelId: APP_USER_MODEL_ID,
     };
@@ -2802,7 +2819,7 @@ async function openNeteaseMusicLoginWindow(owner) {
       autoHideMenuBar: true,
       title: '网易云音乐登录',
       backgroundColor: '#111111',
-      icon: APP_ICON_ICO,
+      icon: APP_ICON,
       webPreferences: {
         partition: NETEASE_LOGIN_PARTITION,
         contextIsolation: true,
@@ -2912,7 +2929,7 @@ async function openQQMusicLoginWindow(owner, options) {
       autoHideMenuBar: true,
       title: 'QQ 音乐登录',
       backgroundColor: '#111111',
-      icon: APP_ICON_ICO,
+      icon: APP_ICON,
       webPreferences: {
         partition: QQ_LOGIN_PARTITION,
         contextIsolation: true,
@@ -3022,7 +3039,7 @@ async function openKugouMusicLoginWindow(owner) {
       autoHideMenuBar: true,
       title: '酷狗音乐登录',
       backgroundColor: '#111111',
-      icon: APP_ICON_ICO,
+      icon: APP_ICON,
       webPreferences: {
         partition: KUGOU_LOGIN_PARTITION,
         contextIsolation: true,
@@ -3146,7 +3163,7 @@ async function openQishuiOfficialWebLoginWindow(owner, config) {
       autoHideMenuBar: true,
       title: '汽水音乐扫码登录',
       backgroundColor: '#10110f',
-      icon: APP_ICON_ICO,
+      icon: APP_ICON,
       webPreferences: {
         partition: QISHUI_LOGIN_PARTITION,
         contextIsolation: true,
@@ -3386,7 +3403,7 @@ async function openQishuiOfficialWebLoginWindowLegacy(owner, config) {
       autoHideMenuBar: true,
       title: '汽水音乐官方窗口',
       backgroundColor: '#111111',
-      icon: APP_ICON_ICO,
+      icon: APP_ICON,
       webPreferences: {
         partition: QISHUI_LOGIN_PARTITION,
         contextIsolation: true,
@@ -3589,6 +3606,9 @@ function qishuiOAuthRedirectMatches(targetUrl, redirectUri) {
 }
 
 async function openQishuiMusicLoginWindow(owner) {
+  if (process.platform !== 'win32') {
+    return openQishuiOfficialWebLoginWindow(owner, getQishuiOAuthConfig());
+  }
   const imported = await readQishuiOfficialClientCookieHeader();
   if (imported && imported.cookie) {
     let importedStatus = null;
@@ -3903,7 +3923,7 @@ async function openSpotifyMusicLoginWindow(owner) {
       autoHideMenuBar: true,
       title: 'Spotify 授权',
       backgroundColor: '#101414',
-      icon: APP_ICON_ICO,
+      icon: APP_ICON,
       webPreferences: {
         partition: SPOTIFY_LOGIN_PARTITION,
         contextIsolation: true,
@@ -4126,6 +4146,14 @@ function exitFullscreenToWindow(win) {
   if (!win || win.isDestroyed()) return;
   windowFullscreenActive = false;
 
+  if (process.platform === 'darwin'
+    && typeof win.isSimpleFullScreen === 'function'
+    && win.isSimpleFullScreen()) {
+    win.setSimpleFullScreen(false);
+    setTimeout(() => applyWindowedBounds(win), 50);
+    return;
+  }
+
   if (!win.isFullScreen()) {
     applyWindowedBounds(win);
     return;
@@ -4140,6 +4168,17 @@ function exitFullscreenToWindow(win) {
 
 function toggleFullscreen(win) {
   if (!win || win.isDestroyed()) return;
+  if (process.platform === 'darwin' && typeof win.setSimpleFullScreen === 'function') {
+    if ((typeof win.isSimpleFullScreen === 'function' && win.isSimpleFullScreen()) || windowFullscreenActive) {
+      exitFullscreenToWindow(win);
+      return;
+    }
+    windowFullscreenActive = true;
+    ensureMainWindowInsideDisplay(win);
+    win.setSimpleFullScreen(true);
+    sendWindowState(win);
+    return;
+  }
   if (win.isFullScreen() || windowFullscreenActive) {
     exitFullscreenToWindow(win);
     return;
@@ -5769,7 +5808,7 @@ async function createWindowOnce() {
     hasShadow: true,
     autoHideMenuBar: true,
     title: APP_NAME,
-    icon: APP_ICON_ICO,
+    icon: APP_ICON,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       contextIsolation: true,
@@ -5880,6 +5919,7 @@ async function createWindowOnce() {
     scheduleWallpaperEngineHostBoundsRestart(win, 'resize');
   });
   win.on('close', (event) => {
+    if (appQuitting) return;
     const desktopMode = fullDesktopModeRuntime.getStatus('main-window-close');
     if (desktopMode.enabled === true) {
       event.preventDefault();
@@ -6080,6 +6120,21 @@ if (!gotSingleInstanceLock) {
   app.on('before-quit', (event) => {
     appQuitting = true;
     if (appQuitCleanupComplete) return;
+    if (process.platform !== 'win32') {
+      clearWallpaperEngineCaptureGrant();
+      wallpaperEngineLibrary.dispose();
+      stopMemoryAutoTimer();
+      unregisterFullDesktopEscapeShortcut();
+      unregisterMineradioGlobalHotkeys();
+      closeDesktopLyricsWindow();
+      if (localServer && localServer.close) localServer.close();
+      if (tray) {
+        try { tray.destroy(); } catch (e) {}
+        tray = null;
+      }
+      appQuitCleanupComplete = true;
+      return;
+    }
     event.preventDefault();
     if (appQuitCleanupPromise) return;
     clearWallpaperEngineCaptureGrant();

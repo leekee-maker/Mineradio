@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="410" height="900" viewBox="0 0 410 900">
+<defs>
+    <linearGradient id="board" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#101521"/><stop offset="1" stop-color="#07090F"/></linearGradient>
+    <linearGradient id="brand" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#45D9FF"/><stop offset=".48" stop-color="#9D6BFF"/><stop offset="1" stop-color="#FF4F9D"/></linearGradient>
+    <linearGradient id="brandSoft" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#45D9FF" stop-opacity=".42"/><stop offset="1" stop-color="#FF4F9D" stop-opacity=".18"/></linearGradient>
+    <linearGradient id="coverA" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#00D1FF"/><stop offset=".48" stop-color="#6157FF"/><stop offset="1" stop-color="#FF3F82"/></linearGradient>
+    <linearGradient id="coverB" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#FFC46A"/><stop offset=".5" stop-color="#FF6B8A"/><stop offset="1" stop-color="#6A4CFF"/></linearGradient>
+    <radialGradient id="stage" cx="50%" cy="34%" r="72%"><stop stop-color="#7756FF" stop-opacity=".72"/><stop offset=".55" stop-color="#142947" stop-opacity=".34"/><stop offset="1" stop-color="#090B12" stop-opacity="0"/></radialGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="160%"><feDropShadow dx="0" dy="22" stdDeviation="24" flood-color="#000" flood-opacity=".48"/></filter>
+    <filter id="blur"><feGaussianBlur stdDeviation="26"/></filter>
+    <style>
+      .phone{fill:#0B0E15;stroke:#2C3342;stroke-width:2}.screenTitle{font:700 30px -apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif;fill:#F7F9FF}.h1{font:800 34px -apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif;fill:#fff}.h2{font:700 20px -apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif;fill:#F7F9FF}.body{font:500 15px -apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif;fill:#E6EAF4}.sub{font:500 13px -apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif;fill:#8992A5}.tiny{font:600 11px -apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif;fill:#8992A5;letter-spacing:.4px}.accent{fill:#45D9FF}.card{fill:#151A24;stroke:#2B3342;stroke-width:1}.glass{fill:#18202D;fill-opacity:.84;stroke:#3A4659;stroke-width:1}.divider{stroke:#2A3140;stroke-width:1}.pill{fill:#1A2230;stroke:#364256;stroke-width:1}.label{font:700 12px -apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif;fill:#DCE3F2}.nav{font:600 11px -apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif;fill:#737D91}.navOn{font:700 11px -apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif;fill:#45D9FF}.white{fill:#fff}.muted{fill:#8992A5}.cyan{fill:#45D9FF}.pink{fill:#FF5A9E}.green{fill:#42E682}
+    </style>
+  </defs>
+<g transform="translate(0 0)" filter="url(#shadow)">
+    <rect width="410" height="900" rx="48" class="phone"/><text x="28" y="52" class="tiny">9:41</text><text x="326" y="52" class="tiny">5G  ●  97%</text><text x="24" y="104" class="body">‹ 播放</text><text x="156" y="104" class="screenTitle">播放队列</text>
+    <rect x="22" y="132" width="366" height="108" rx="22" fill="url(#brandSoft)" stroke="#49607C"/><text x="42" y="166" class="tiny">SMART SOURCE ROUTER</text><text x="42" y="197" class="h2">自动选择最佳可播音源</text><text x="42" y="222" class="sub">优先会员音质，失败时无感切换</text>
+    <text x="24" y="286" class="h2">正在播放</text>
+    <rect x="22" y="306" width="366" height="92" rx="20" class="card"/><rect x="36" y="322" width="58" height="58" rx="15" fill="url(#coverA)"/><text x="110" y="345" class="body">谢谢侬</text><text x="110" y="372" class="sub">网易云 · Hi-Res</text><text x="346" y="356" class="body cyan">Ⅱ</text>
+    <text x="24" y="442" class="h2">可用音源</text>
+    <rect x="22" y="462" width="366" height="68" rx="18" class="card"/><circle cx="54" cy="496" r="16" fill="#45D9FF" opacity=".2"/><text x="48" y="502" class="label cyan">网</text><text x="82" y="492" class="body">网易云</text><text x="82" y="513" class="sub">Hi-Res · 24bit/96kHz</text><rect x="304" y="482" width="62" height="28" rx="14" fill="#42E682" opacity=".15"/><text x="322" y="501" class="tiny" fill="#63F29A">使用中</text>
+    <rect x="22" y="542" width="366" height="68" rx="18" class="card"/><circle cx="54" cy="576" r="16" fill="#9D6BFF" opacity=".2"/><text x="48" y="582" class="label">Q</text><text x="82" y="572" class="body">QQ音乐</text><text x="82" y="593" class="sub">SQ · 会员可用</text><text x="340" y="582" class="body">›</text>
+    <rect x="22" y="622" width="366" height="68" rx="18" class="card"/><circle cx="54" cy="656" r="16" fill="#FF5A9E" opacity=".2"/><text x="48" y="662" class="label pink">汽</text><text x="82" y="652" class="body">汽水音乐</text><text x="82" y="673" class="sub">高品质 · 可播放</text><text x="340" y="662" class="body">›</text>
+    <rect x="22" y="728" width="366" height="58" rx="20" class="glass"/><text x="42" y="763" class="label">下一首：富士山下</text><text x="346" y="763" class="body">≡</text><text x="20" y="886" class="tiny">07 · QUEUE / SOURCE ROUTER</text>
+  </g>
+</svg>

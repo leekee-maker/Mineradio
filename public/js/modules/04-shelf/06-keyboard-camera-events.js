@@ -37,6 +37,45 @@ function isPlaybackSpaceKey(e) {
     !isTypingTarget(e.target)
   );
 }
+function handleShelfArrowNavigation(e) {
+  if (!e || (e.code !== 'ArrowUp' && e.code !== 'ArrowDown')) return false;
+  if (e.ctrlKey || e.altKey || e.shiftKey || e.metaKey || isTypingTarget(e.target)) return false;
+  if (!shelfManager || !shelfManager.getMode || shelfManager.getMode() === 'off') return false;
+  var forward = e.code === 'ArrowDown';
+  var contentOpen = shelfManager.hasOpenContent && shelfManager.hasOpenContent();
+  if (contentOpen) {
+    var cl = shelfManager.getContentList && shelfManager.getContentList();
+    if (!cl) return false;
+    e.preventDefault();
+    e.stopImmediatePropagation();
+    if (!e.repeat) {
+      if (forward) cl.next();
+      else cl.prev();
+    }
+    return true;
+  }
+  if (!shelfPinnedOpen) return false;
+  e.preventDefault();
+  e.stopImmediatePropagation();
+  if (!e.repeat) {
+    if (forward) shelfManager.next();
+    else shelfManager.prev();
+  }
+  return true;
+}
+function handleShelfEnterAction(e) {
+  if (!e || (e.code !== 'Enter' && e.code !== 'NumpadEnter')) return false;
+  if (e.ctrlKey || e.altKey || e.shiftKey || e.metaKey || isTypingTarget(e.target)) return false;
+  if (!shelfPinnedOpen || !shelfManager || !shelfManager.playPlaylistAt) return false;
+  if (shelfManager.hasOpenContent && shelfManager.hasOpenContent()) return false;
+  var centerIdx = shelfManager.getCenterIdx();
+  var card = shelfManager.getCardAt && shelfManager.getCardAt(centerIdx);
+  if (!card || !card.item || card.item.type !== 'playlist') return false;
+  e.preventDefault();
+  e.stopImmediatePropagation();
+  if (!e.repeat) shelfManager.playPlaylistAt(centerIdx);
+  return true;
+}
 document.addEventListener('keydown', function (e) {
   consumeFreeCameraKeyEvent(e, true);
 }, true);
@@ -71,6 +110,8 @@ document.addEventListener('keydown', function (e) {
     }
   }
   if (!shelfManager) return;
+  if (handleShelfEnterAction(e)) return;
+  if (handleShelfArrowNavigation(e)) return;
   if (e.code === 'BracketRight' || e.code === 'PageDown') shelfManager.next();
   else if (e.code === 'BracketLeft' || e.code === 'PageUp') shelfManager.prev();
 });

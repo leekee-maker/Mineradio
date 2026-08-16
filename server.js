@@ -36,11 +36,14 @@ const {
   scrobble,
   listen_data_total,
   playlist_tracks,
+  artist_album,
   playlist_track_add,
   playlist_create,
   playlist_detail,
   playlist_track_all,
   personalized,
+  top_playlist,
+  toplist,
   recommend_resource,
   recommend_songs,
   dj_detail,
@@ -89,6 +92,8 @@ const {
 const {
   getQishuiStatus,
   handleQishuiStatus,
+  createQishuiPcQrLogin,
+  checkQishuiPcQrLogin,
   normalizeQishuiCookieInput,
   qishuiCookieHasLogin,
   saveQishuiAccessToken,
@@ -144,8 +149,11 @@ const LOGIN_EASTER_EGG_PROTECTED_ROUTES = new Set([
   '/api/kugou/login/cookie',
   '/api/qishui/login/token',
   '/api/qishui/login/cookie',
+  '/api/qishui/login/qr/create',
+  '/api/qishui/login/qr/check',
   '/api/spotify/config',
 ]);
+const qishuiQrSessions = new Map();
 const UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36';
 const DEFAULT_COOKIE_FILE = path.join(__dirname, '.cookie');
 const DEFAULT_QQ_COOKIE_FILE = path.join(__dirname, '.qq-cookie');
@@ -364,6 +372,7 @@ function saveQQCookie(c) {
   qqCookie = saveConfiguredCookieStore(configuredCookieStores.qq, normalizeCookieHeader(c) || rawCookieFallback(c));
   qqVipInfoCache.clear();
   clearQQLikedPlaylistCoverCache();
+  clearQQPlayabilityCache();
 }
 
 let kugouCookie = '';
@@ -1238,11 +1247,11 @@ const NETEASE_SOURCE_MATCH_TOTAL_BUDGET_MS = 8000;
 const NETEASE_SOURCE_MATCH_LOOKUP_BUDGET_MS = 4800;
 const NETEASE_SONG_URL_TOTAL_BUDGET_MS = 12000;
 const QQ_QUALITY_CANDIDATE_TEMPLATES = [
-  { prefix: 'RS01', ext: '.flac', level: 'hires', label: 'Hi-Res FLAC' },
-  { prefix: 'F000', ext: '.flac', level: 'lossless', label: '无损 FLAC' },
-  { prefix: 'M800', ext: '.mp3', level: 'exhigh', label: '320k MP3' },
-  { prefix: 'M500', ext: '.mp3', level: 'standard', label: '128k MP3' },
-  { prefix: 'C400', ext: '.m4a', level: 'aac', label: 'AAC/M4A' },
+  { prefix: 'RS01', ext: '.flac', level: 'hires', label: 'Hi-Res FLAC', codec: 'flac', br: 1999000 },
+  { prefix: 'F000', ext: '.flac', level: 'lossless', label: '无损 FLAC', codec: 'flac', br: 1411000 },
+  { prefix: 'M800', ext: '.mp3', level: 'exhigh', label: '320k MP3', codec: 'mp3', br: 320000 },
+  { prefix: 'M500', ext: '.mp3', level: 'standard', label: '128k MP3', codec: 'mp3', br: 128000 },
+  { prefix: 'C400', ext: '.m4a', level: 'aac', label: 'AAC/M4A', codec: 'aac', br: 192000 },
 ];
 function normalizeQualityPreference(value) {
   const raw = String(value || '').toLowerCase().trim();
@@ -1252,6 +1261,25 @@ function normalizeQualityPreference(value) {
   if (['exhigh', 'high', '320', '320k', 'hq'].includes(raw)) return 'exhigh';
   if (['standard', 'normal', '128', '128k', 'std'].includes(raw)) return 'standard';
   return 'hires';
+}
+
+function actualAudioQuality(probe, bitrate, reportedLevel) {
+  const magic = String(probe && probe.magic || '').toLowerCase();
+  const br = Number(bitrate || 0) || 0;
+  const lossless = /flac|wave|alac/.test(magic);
+  const reported = String(reportedLevel || '').toLowerCase();
+  const hiResVerified = Number(probe && probe.sampleRate || 0) > 48000 || Number(probe && probe.bitDepth || 0) > 16;
+  if (lossless && hiResVerified && ['jymaster', 'hires'].includes(reported)) {
+    return { level: reported, label: reported === 'jymaster' ? '超清母带' : 'Hi-Res', codec: magic.includes('flac') ? 'flac' : magic };
+  }
+  if (lossless) return { level: 'lossless', label: '无损', codec: magic.includes('flac') ? 'flac' : magic };
+  if (/mp3|mpeg/.test(magic)) {
+    return br >= 256000
+      ? { level: 'exhigh', label: '320K', codec: 'mp3' }
+      : { level: 'standard', label: br > 0 ? Math.round(br / 1000) + 'K' : '标准', codec: 'mp3' };
+  }
+  if (/mp4|aac|m4a/.test(magic)) return { level: br >= 256000 ? 'exhigh' : 'aac', label: br >= 256000 ? '高品质 AAC' : 'AAC', codec: 'aac' };
+  return { level: reported || '', label: '', codec: magic };
 }
 function qualityCandidatesFrom(target, candidates) {
   target = normalizeQualityPreference(target);
@@ -1299,12 +1327,171 @@ function mapDiscoverPlaylist(pl, tag) {
     type: 'playlist',
     id,
     name: pl.name || pl.title || '',
-    cover: pl.picUrl || pl.coverImgUrl || pl.coverUrl || pl.uiElement && pl.uiElement.image && pl.uiElement.image.imageUrl || '',
+    cover: normalizeCoverUrl(pl.picUrl || pl.coverImgUrl || pl.coverUrl || pl.uiElement && pl.uiElement.image && pl.uiElement.image.imageUrl || ''),
     trackCount: pl.trackCount || pl.songCount || pl.programCount || 0,
     playCount: pl.playCount || pl.playcount || 0,
     creator: creator.nickname || creator.name || '',
     tag: tag || pl.alg || '',
   };
+}
+
+const DISCOVER_PUBLIC_CACHE_TTL_MS = 8 * 60 * 1000;
+let discoverPublicCache = { expiresAt: 0, value: null };
+
+function normalizeCoverUrl(value) {
+  return String(value || '').replace(/^http:\/\//i, 'https://');
+}
+
+function mapQQToplist(item) {
+  item = item || {};
+  const topId = String(item.topId || item.topid || '').trim();
+  const period = String(item.period || '').trim();
+  return {
+    provider: 'qq',
+    source: 'qq',
+    type: 'playlist',
+    id: ['qq-toplist', topId, period].filter(Boolean).join(':'),
+    name: item.title || item.musichallTitle || '',
+    cover: normalizeCoverUrl(item.frontPicUrl || item.mbFrontPicUrl || item.headPicUrl || item.topAlbumURL),
+    trackCount: Number(item.totalNum || item.songNum || 0) || 0,
+    playCount: Number(item.listenNum || 0) || 0,
+    creator: 'QQ 音乐',
+    tag: item.updateTips || '实时榜单',
+    virtual: true,
+  };
+}
+
+async function fetchQQToplists(limit) {
+  const json = await qqMusicRequest({
+    comm: { ct: 24, cv: 0 },
+    toplist: {
+      module: 'musicToplist.ToplistInfoServer',
+      method: 'GetAll',
+      param: {},
+    },
+  });
+  const data = json && json.toplist && json.toplist.data || {};
+  const items = (Array.isArray(data.group) ? data.group : [])
+    .flatMap(group => Array.isArray(group && group.toplist) ? group.toplist : []);
+  const preferred = ['飙升榜', '热歌榜', '新歌榜', '流行指数榜', 'DJ舞曲榜'];
+  const ordered = preferred
+    .map(name => items.find(item => String(item && item.title || '').includes(name)))
+    .filter(Boolean)
+    .concat(items);
+  const seen = new Set();
+  return ordered
+    .map(mapQQToplist)
+    .filter(item => item.id && item.name && !seen.has(item.id) && seen.add(item.id))
+    .slice(0, Math.max(1, Number(limit) || 4));
+}
+
+function mapQQHotPlaylist(item) {
+  item = item || {};
+  const creator = item.creator_info || {};
+  const id = item.tid || item.dissid || item.id;
+  return {
+    provider: 'qq',
+    source: 'qq',
+    type: 'playlist',
+    id: id ? String(id) : '',
+    name: item.title || item.diss_name || '',
+    cover: normalizeCoverUrl(item.cover_url_big || item.cover_url_medium || item.cover_url_small || ''),
+    trackCount: Array.isArray(item.song_ids) ? item.song_ids.length : Number(item.song_num || 0) || 0,
+    playCount: Number(item.access_num || 0) || 0,
+    creator: creator.nick || creator.name || 'QQ 音乐',
+    tag: '热门歌单',
+  };
+}
+
+async function fetchQQHotPlaylists(limit) {
+  const size = Math.max(1, Math.min(20, Number(limit) || 8));
+  const json = await qqMusicRequest({
+    comm: { ct: 24, cv: 0 },
+    req_0: {
+      module: 'playlist.PlayListPlazaServer',
+      method: 'get_playlist_by_category',
+      param: { id: 8, curPage: 1, size, order: 5, titleid: 8 },
+    },
+  });
+  const rows = json && json.req_0 && json.req_0.data && json.req_0.data.v_playlist || [];
+  const seen = new Set();
+  return (Array.isArray(rows) ? rows : [])
+    .map(mapQQHotPlaylist)
+    .filter(item => item.id && item.name && !seen.has(item.id) && seen.add(item.id))
+    .slice(0, size);
+}
+
+async function fetchDiscoverPublicSections() {
+  if (discoverPublicCache.value && discoverPublicCache.expiresAt > Date.now()) return discoverPublicCache.value;
+  const tasks = await Promise.allSettled([
+    toplist({ timestamp: Date.now() }),
+    top_playlist({ limit: 10, order: 'hot', cat: '全部', timestamp: Date.now() }),
+    fetchQQToplists(4),
+    fetchQQHotPlaylists(8),
+    handleQishuiFeed(18, qishuiCookie),
+  ]);
+  const neteaseChartsBody = tasks[0].status === 'fulfilled' && tasks[0].value && tasks[0].value.body || {};
+  const neteaseCharts = (neteaseChartsBody.list || [])
+    .slice(0, 12)
+    .map(pl => mapDiscoverPlaylist(pl, pl.updateFrequency || '官方榜单'))
+    .filter(pl => pl.id && pl.name);
+  const hotBody = tasks[1].status === 'fulfilled' && tasks[1].value && tasks[1].value.body || {};
+  const neteaseHotPlaylists = (hotBody.playlists || [])
+    .map(pl => mapDiscoverPlaylist(pl, '热门歌单'))
+    .filter(pl => pl.id && pl.name)
+    .slice(0, 10);
+  const qqCharts = tasks[2].status === 'fulfilled' ? tasks[2].value : [];
+  const qqHotPlaylists = tasks[3].status === 'fulfilled' ? tasks[3].value : [];
+  const qishuiFeed = tasks[4].status === 'fulfilled' && tasks[4].value || {};
+  const qishuiSongs = Array.isArray(qishuiFeed.songs) ? qishuiFeed.songs : [];
+  const qishuiPlaylists = qishuiSongs.length ? [{
+    provider: 'qishui', source: 'qishui', type: 'playlist', id: 'qishui-feed',
+    name: '汽水实时推荐', cover: qishuiSongs[0].cover || '', trackCount: qishuiSongs.length,
+    playCount: 0, creator: '汽水音乐', tag: '为你推荐', virtual: true,
+  }] : [];
+  const charts = [];
+  const maxRows = Math.max(neteaseCharts.length, qqCharts.length, qishuiPlaylists.length);
+  for (let i = 0; i < maxRows; i += 1) {
+    if (neteaseCharts[i]) charts.push(neteaseCharts[i]);
+    if (qqCharts[i]) charts.push(qqCharts[i]);
+    if (qishuiPlaylists[i]) charts.push(qishuiPlaylists[i]);
+  }
+  const hotPlaylists = [];
+  const hotRows = Math.max(neteaseHotPlaylists.length, qqHotPlaylists.length, qishuiPlaylists.length);
+  for (let i = 0; i < hotRows; i += 1) {
+    if (neteaseHotPlaylists[i]) hotPlaylists.push(neteaseHotPlaylists[i]);
+    if (qqHotPlaylists[i]) hotPlaylists.push(qqHotPlaylists[i]);
+    if (qishuiPlaylists[i]) hotPlaylists.push(qishuiPlaylists[i]);
+  }
+  const trackTasks = await Promise.allSettled([
+    neteaseCharts[0] ? playlist_track_all({ id: neteaseCharts[0].id, limit: 12, offset: 0, timestamp: Date.now() }) : null,
+    qqCharts[0] ? handleQQToplistTracks(parseQQToplistId(qqCharts[0].id), { limit: 12, offset: 0 }) : null,
+  ]);
+  const neteaseTrackBody = trackTasks[0].status === 'fulfilled' && trackTasks[0].value && trackTasks[0].value.body || {};
+  const neteaseSongs = (neteaseTrackBody.songs || neteaseTrackBody.playlist && neteaseTrackBody.playlist.tracks || [])
+    .map(mapSongRecord).filter(song => song.id && song.name);
+  const qqSongs = trackTasks[1].status === 'fulfilled' && trackTasks[1].value && trackTasks[1].value.tracks || [];
+  const trendingSongs = [];
+  const seenSongs = new Set();
+  const pools = [neteaseSongs, qqSongs, qishuiSongs];
+  for (let i = 0; i < 18; i += 1) {
+    pools.forEach(pool => {
+      const song = pool[i];
+      if (!song || trendingSongs.length >= 24) return;
+      const key = String(song.name || '').toLowerCase().replace(/\s+/g, '') + '|' + String(song.artist || '').toLowerCase().replace(/\s+/g, '');
+      if (!key || seenSongs.has(key)) return;
+      seenSongs.add(key);
+      trendingSongs.push(song);
+    });
+  }
+  const value = {
+    charts: charts.slice(0, 18),
+    hotPlaylists: hotPlaylists.slice(0, 18),
+    qishuiSongs,
+    trendingSongs,
+  };
+  discoverPublicCache = { expiresAt: Date.now() + DISCOVER_PUBLIC_CACHE_TTL_MS, value };
+  return value;
 }
 
 function lowSignalText(value) {
@@ -1702,43 +1889,157 @@ async function handleNeteaseAlbumDetail(id, limit) {
   };
 }
 
+async function handleNeteaseArtistUniverse(id, albumLimit, includeSongs = true) {
+  const artistId = String(id || '').trim();
+  const maxAlbums = Math.max(1, Math.min(60, parseInt(albumLimit || '36', 10) || 36));
+  if (!artistId) return { provider: 'netease', error: 'MISSING_ARTIST_ID', artist: null, albums: [] };
+
+  const detail = await artist_detail({ id: artistId, cookie: userCookie, timestamp: Date.now() });
+  const detailBody = detail.body || detail || {};
+  const artistInfo = detailBody.artist || (detailBody.data && (detailBody.data.artist || detailBody.data)) || {};
+
+  const albumRows = [];
+  const pageSize = Math.min(50, maxAlbums);
+  for (let offset = 0; albumRows.length < maxAlbums; offset += pageSize) {
+    const page = await artist_album({
+      id: artistId,
+      limit: pageSize,
+      offset,
+      cookie: userCookie,
+      timestamp: Date.now(),
+    });
+    const body = page.body || page || {};
+    const rows = body.hotAlbums || body.albums || (body.data && (body.data.hotAlbums || body.data.albums)) || [];
+    if (!Array.isArray(rows) || rows.length === 0) break;
+    albumRows.push(...rows);
+    if (rows.length < pageSize) break;
+  }
+
+  const uniqueAlbums = [];
+  const seen = new Set();
+  albumRows.forEach(row => {
+    const albumId = String(row && row.id || '').trim();
+    if (!albumId || seen.has(albumId)) return;
+    seen.add(albumId);
+    uniqueAlbums.push(row);
+  });
+
+  const albums = includeSongs ? [] : uniqueAlbums.map(row => ({
+    provider: 'netease',
+    album: {
+      provider: 'netease',
+      id: row.id,
+      albumId: row.id,
+      name: row.name || '',
+      artist: mapArtists(row.artists || row.ar || []).map(a => a.name).join(' / ') || artistInfo.name || '',
+      artists: mapArtists(row.artists || row.ar || []),
+      cover: row.picUrl || row.coverUrl || row.blurPicUrl || '',
+      releaseDate: row.publishTime || row.publishTime === 0 ? row.publishTime : '',
+      trackCount: Number(row.size || row.trackCount || 0) || 0,
+    },
+    songs: [],
+    total: Number(row.size || row.trackCount || 0) || 0,
+  }));
+
+  if (includeSongs) {
+    for (let offset = 0; offset < uniqueAlbums.length; offset += 2) {
+      const batch = uniqueAlbums.slice(offset, offset + 2);
+      const details = await Promise.all(batch.map(async row => {
+        for (let attempt = 0; attempt < 3; attempt += 1) {
+          try {
+            return await handleNeteaseAlbumDetail(row.id, 120);
+          } catch (error) {
+            console.warn('[ArtistUniverseAlbum]', row.id, error && error.message || error);
+            if (attempt < 2) await new Promise(resolve => setTimeout(resolve, 180 * (attempt + 1)));
+          }
+        }
+        return null;
+      }));
+      albums.push(...details.filter(item => item && item.album && item.songs && item.songs.length));
+    }
+  }
+
+  const songs = albums.flatMap(item => item.songs || []);
+  return {
+    provider: 'netease',
+    artist: {
+      id: artistInfo.id || artistId,
+      name: artistInfo.name || artistInfo.artistName || '',
+      avatar: artistInfo.avatar || artistInfo.cover || artistInfo.picUrl || artistInfo.img1v1Url || '',
+      brief: artistInfo.briefDesc || artistInfo.description || artistInfo.desc || '',
+      musicSize: artistInfo.musicSize || artistInfo.songSize || songs.length,
+      albumSize: artistInfo.albumSize || albums.length,
+    },
+    albums,
+    totalAlbums: albums.length,
+    totalSongs: includeSongs ? songs.length : Number(artistInfo.musicSize || artistInfo.songSize || 0) || 0,
+  };
+}
+
+async function handleNeteaseArtistSearch(keywords, limit) {
+  const query = String(keywords || '').trim();
+  const max = Math.max(1, Math.min(20, parseInt(limit || '6', 10) || 6));
+  if (!query) return { provider: 'netease', artists: [] };
+  const result = await search({ keywords: query, type: 100, limit: max, cookie: userCookie, timestamp: Date.now() });
+  const body = result.body || result || {};
+  const rows = body.result && (body.result.artists || body.result.artist) || body.artists || [];
+  return {
+    provider: 'netease',
+    artists: (Array.isArray(rows) ? rows : []).map(artist => ({
+      id: artist && artist.id,
+      name: artist && artist.name || '',
+      avatar: artist && (artist.picUrl || artist.img1v1Url || artist.avatarUrl || ''),
+      albumSize: artist && (artist.albumSize || artist.albumCount || 0),
+      musicSize: artist && (artist.musicSize || artist.musicCount || 0),
+    })).filter(artist => artist.id && artist.name),
+  };
+}
+
 function mapDailyRecommendationSongs(raw) {
   return (Array.isArray(raw) ? raw : [])
     .map(mapSongRecord)
     .filter(song => song && song.id && song.name);
 }
 
+function deduplicateDiscoverSections(sections) {
+  const seen = new Set();
+  return (Array.isArray(sections) ? sections : [])
+    .map(section => ({
+      ...section,
+      playlists: (Array.isArray(section && section.playlists) ? section.playlists : []).filter(playlist => {
+        const provider = String(playlist && (playlist.provider || playlist.source) || 'netease').toLowerCase();
+        const id = String(playlist && playlist.id || '').trim();
+        if (!id) return false;
+        const key = `${provider}:${id}`;
+        if (seen.has(key)) return false;
+        seen.add(key);
+        return true;
+      }),
+    }))
+    .filter(section => section.playlists.length);
+}
+
 async function handleDiscoverHome() {
-  const info = await getLoginInfo();
+  const [info, publicContent] = await Promise.all([
+    getLoginInfo().catch(() => ({ loggedIn: false })),
+    fetchDiscoverPublicSections(),
+  ]);
   const loggedIn = !!(info && info.loggedIn);
-  if (!loggedIn) {
-    return {
-      loggedIn: false,
-      user: null,
-      dailySongs: [],
-      dailySongTotal: 0,
-      dailySongsComplete: true,
-      playlists: [],
-      podcasts: [],
-      mode: 'starter',
-      updatedAt: Date.now(),
-    };
-  }
-  const tasks = [
+  const tasks = loggedIn ? [
     personalized({ limit: 8, cookie: userCookie, timestamp: Date.now() }),
     recommend_resource({ cookie: userCookie, timestamp: Date.now() }),
     recommend_songs({ cookie: userCookie, timestamp: Date.now() }),
-  ];
+  ] : [];
   const result = await Promise.allSettled(tasks);
 
-  const personalizedBody = result[0].status === 'fulfilled' && result[0].value && result[0].value.body || {};
+  const personalizedBody = result[0] && result[0].status === 'fulfilled' && result[0].value && result[0].value.body || {};
   const publicPlaylists = (personalizedBody.result || personalizedBody.data || [])
     .map(pl => mapDiscoverPlaylist(pl, '推荐歌单'))
     .filter(pl => pl.id && pl.name)
     .slice(0, 8);
 
   let privatePlaylists = [];
-  if (result[1].status === 'fulfilled' && result[1].value) {
+  if (result[1] && result[1].status === 'fulfilled' && result[1].value) {
     const body = result[1].value.body || {};
     const raw = body.recommend || body.data || [];
     privatePlaylists = (Array.isArray(raw) ? raw : [])
@@ -1748,20 +2049,51 @@ async function handleDiscoverHome() {
   }
 
   let dailySongs = [];
-  if (result[2].status === 'fulfilled' && result[2].value) {
+  if (result[2] && result[2].status === 'fulfilled' && result[2].value) {
     const body = result[2].value.body || {};
     const raw = body.data && (body.data.dailySongs || body.data.recommend) || body.recommend || [];
     dailySongs = mapDailyRecommendationSongs(raw);
   }
 
+  const personalPlaylists = privatePlaylists.concat(publicPlaylists).slice(0, 10);
+  const sections = [
+    {
+      id: 'cross-platform-charts',
+      title: '跨平台热榜',
+      subtitle: '网易云·QQ音乐·汽水实时内容',
+      kind: 'charts',
+      playlists: publicContent.charts,
+    },
+    {
+      id: 'hot-playlists',
+      title: '全网热门歌单',
+      subtitle: '按平台实时热度更新',
+      kind: 'playlists',
+      playlists: publicContent.hotPlaylists,
+    },
+  ];
+  if (personalPlaylists.length || dailySongs.length) {
+    sections.unshift({
+      id: 'for-you',
+      title: '为你推荐',
+      subtitle: '来自已登录平台的私人推荐',
+      kind: 'personal',
+      playlists: personalPlaylists,
+    });
+  }
+  const deduplicatedSections = deduplicateDiscoverSections(sections);
+  const featuredSongs = dailySongs.length ? dailySongs : publicContent.trendingSongs;
   return {
     loggedIn,
     user: loggedIn ? { userId: info.userId, nickname: info.nickname || '', avatar: info.avatar || '' } : null,
-    dailySongs,
-    dailySongTotal: dailySongs.length,
+    dailySongs: featuredSongs,
+    dailySongTotal: featuredSongs.length,
     dailySongsComplete: true,
-    playlists: privatePlaylists.concat(publicPlaylists).slice(0, 10),
+    trendingSongs: publicContent.trendingSongs,
+    playlists: personalPlaylists.length ? personalPlaylists : publicContent.hotPlaylists,
+    sections: deduplicatedSections,
     podcasts: [],
+    mode: loggedIn ? 'personalized' : 'public',
     updatedAt: Date.now(),
   };
 }
@@ -3172,8 +3504,150 @@ async function handleQQUserPlaylists() {
   return { loggedIn: true, provider: 'qq', userId: uin, playlists };
 }
 
+function parseQQToplistId(value) {
+  const match = String(value || '').match(/^qq-toplist:(\d+)(?::(.+))?$/);
+  return match ? { topId: Number(match[1]), period: decodeURIComponent(match[2] || '') } : null;
+}
+
+const QQ_PLAYABILITY_CACHE_TTL_MS = 10 * 60 * 1000;
+const QQ_PLAYABILITY_BATCH_SIZE = 20;
+const qqPlayabilityCache = new Map();
+
+function clearQQPlayabilityCache() {
+  qqPlayabilityCache.clear();
+}
+
+function qqPlayableTrackKey(song) {
+  return String(song && (song.mid || song.songmid || song.id) || '').trim();
+}
+
+function selectPlayableQQTracks(songs, playableKeys) {
+  return (Array.isArray(songs) ? songs : []).filter(song => {
+    const key = String(song && (song.mid || song.songmid || song.id) || '').trim();
+    const name = String(song && song.name || '').trim();
+    return !!key && !!name && !/^(?:异常)?加载中$|暂无歌曲/i.test(name) && playableKeys.has(key);
+  });
+}
+
+async function fetchQQPlayableKeys(songs) {
+  const cookieObj = qqCookieObject();
+  const uin = qqCookieUin(cookieObj) || '0';
+  const musicKey = qqCookieMusicKey(cookieObj);
+  if (!uin || uin === '0' || !musicKey) return new Set();
+  const guid = String(10000000 + Math.floor(Math.random() * 90000000));
+  const candidates = [];
+  (songs || []).forEach(song => {
+    const songmid = qqPlayableTrackKey(song);
+    if (!songmid) return;
+    const mediaIds = [song.mediaMid, song.media_mid, songmid]
+      .map(value => String(value || '').trim()).filter((value, index, list) => value && list.indexOf(value) === index);
+    mediaIds.forEach(mediaId => {
+      candidates.push({ key: songmid, songmid, filename: 'M500' + mediaId + '.mp3' });
+      candidates.push({ key: songmid, songmid, filename: 'C400' + mediaId + '.m4a' });
+    });
+  });
+  if (!candidates.length) return new Set();
+  const json = await qqMusicRequest({
+    comm: { uin, format: 'json', ct: 19, cv: 0, authst: musicKey },
+    req_0: {
+      module: 'vkey.GetVkeyServer',
+      method: 'CgiGetVkey',
+      param: {
+        guid,
+        songmid: candidates.map(item => item.songmid),
+        songtype: candidates.map(() => 0),
+        filename: candidates.map(item => item.filename),
+        uin,
+        loginflag: 1,
+        platform: '20',
+      },
+    },
+  }, { cookie: true, timeoutMs: QQ_VKEY_REQUEST_TIMEOUT_MS });
+  const infos = json && json.req_0 && json.req_0.data && json.req_0.data.midurlinfo || [];
+  const playableFiles = new Set((Array.isArray(infos) ? infos : [])
+    .filter(info => info && info.purl).map(info => String(info.filename || '')));
+  return new Set(candidates.filter(item => playableFiles.has(item.filename)).map(item => item.key));
+}
+
+async function filterPlayableQQTracks(songs) {
+  const visible = (Array.isArray(songs) ? songs : []).filter(song => {
+    const name = String(song && song.name || '').trim();
+    return name && !/^(?:异常)?加载中$|暂无歌曲/i.test(name);
+  });
+  const now = Date.now();
+  const playableKeys = new Set();
+  const unresolved = [];
+  visible.forEach(song => {
+    const key = qqPlayableTrackKey(song);
+    const cached = qqPlayabilityCache.get(key);
+    if (cached && cached.expiresAt > now) {
+      if (cached.playable) playableKeys.add(key);
+      return;
+    }
+    unresolved.push(song);
+  });
+  const chunks = [];
+  for (let index = 0; index < unresolved.length; index += QQ_PLAYABILITY_BATCH_SIZE) {
+    chunks.push(unresolved.slice(index, index + QQ_PLAYABILITY_BATCH_SIZE));
+  }
+  let cursor = 0;
+  const workers = Array.from({ length: Math.min(4, chunks.length) }, async () => {
+    while (cursor < chunks.length) {
+      const chunk = chunks[cursor++];
+      let chunkPlayable = new Set();
+      try { chunkPlayable = await fetchQQPlayableKeys(chunk); }
+      catch (err) { console.warn('[QQPlayability]', err.message); }
+      chunk.forEach(song => {
+        const key = qqPlayableTrackKey(song);
+        const playable = chunkPlayable.has(key);
+        qqPlayabilityCache.set(key, { playable, expiresAt: now + QQ_PLAYABILITY_CACHE_TTL_MS });
+        if (playable) playableKeys.add(key);
+      });
+    }
+  });
+  await Promise.all(workers);
+  return selectPlayableQQTracks(visible, playableKeys).map(song => ({ ...song, playable: true }));
+}
+
+async function handleQQToplistTracks(parsed, opts) {
+  opts = opts || {};
+  const limit = Math.max(1, Math.min(100, parseInt(opts.limit || '50', 10) || 50));
+  const offset = Math.max(0, parseInt(opts.offset || '0', 10) || 0);
+  const json = await qqMusicRequest({
+    comm: { ct: 24, cv: 0 },
+    toplist: {
+      module: 'musicToplist.ToplistInfoServer',
+      method: 'GetDetail',
+      param: { topid: parsed.topId, offset, num: limit, period: parsed.period || '' },
+    },
+  });
+  const data = json && json.toplist && json.toplist.data || {};
+  const tracks = (Array.isArray(data.songInfoList) ? data.songInfoList : [])
+    .map(mapQQPlaylistTrack)
+    .filter(song => song.name && (song.mid || song.id));
+  const playableTracks = await filterPlayableQQTracks(tracks);
+  const detail = data.data || {};
+  return {
+    loggedIn: !!qqCookie,
+    provider: 'qq',
+    playlist: {
+      provider: 'qq', id: ['qq-toplist', parsed.topId, parsed.period].filter(Boolean).join(':'),
+      name: detail.title || 'QQ 音乐热榜', cover: normalizeCoverUrl(detail.frontPicUrl || detail.mbFrontPicUrl || ''),
+      trackCount: playableTracks.length,
+    },
+    tracks: playableTracks,
+    total: playableTracks.length,
+    offset,
+    limit,
+    nextOffset: offset + tracks.length,
+    hasMore: tracks.length >= limit,
+  };
+}
+
 async function handleQQPlaylistTracks(id, opts) {
   opts = opts || {};
+  const publicToplist = parseQQToplistId(id);
+  if (publicToplist) return handleQQToplistTracks(publicToplist, opts);
   const info = await getQQLoginInfo();
   if (!info.loggedIn || !info.userId) return { loggedIn: false, provider: 'qq', tracks: [] };
   const pid = String(id || '').trim();
@@ -3204,7 +3678,8 @@ async function handleQQPlaylistTracks(id, opts) {
       : rawTracks.slice(pageOffset, pageOffset + pageLimit);
   }
   const tracks = rawTracks.map(mapQQPlaylistTrack).filter(s => s.name && (s.mid || s.id));
-  const total = totalHint || tracks.length;
+  const playableTracks = await filterPlayableQQTracks(tracks);
+  const total = playableTracks.length;
   const playlist = {
     provider: 'qq',
     id: pid,
@@ -3216,11 +3691,11 @@ async function handleQQPlaylistTracks(id, opts) {
     loggedIn: true,
     provider: 'qq',
     playlist,
-    tracks,
+    tracks: playableTracks,
     offset: pageOffset,
     limit: pageLimit || tracks.length,
-    nextOffset: pageOffset + tracks.length,
-    hasMore: pageLimit ? (pageOffset + tracks.length < total || tracks.length >= pageLimit) : false,
+    nextOffset: pageOffset + rawTracks.length,
+    hasMore: pageLimit ? (pageOffset + rawTracks.length < totalHint || rawTracks.length >= pageLimit) : false,
     partial: !!pageLimit,
     total,
   };
@@ -3555,6 +4030,22 @@ function audioProbeMagic(buffer) {
   }
   return '';
 }
+function audioProbeDetails(buffer) {
+  const magic = audioProbeMagic(buffer);
+  const details = { magic, sampleRate: 0, bitDepth: 0, channels: 0 };
+  if (magic === 'flac' && buffer && buffer.length >= 26 && (buffer[4] & 0x7f) === 0 && buffer.readUIntBE(5, 3) >= 18) {
+    const packed = buffer.readBigUInt64BE(18);
+    details.sampleRate = Number((packed >> 44n) & 0xfffffn);
+    details.channels = Number((packed >> 41n) & 0x7n) + 1;
+    details.bitDepth = Number((packed >> 36n) & 0x1fn) + 1;
+  }
+  if (magic === 'wave' && buffer && buffer.length >= 36) {
+    details.channels = buffer.readUInt16LE(22);
+    details.sampleRate = buffer.readUInt32LE(24);
+    details.bitDepth = buffer.readUInt16LE(34);
+  }
+  return details;
+}
 async function probePlaybackAudioUrl(audioUrl, timeoutMs) {
   try {
     const probeStartedAt = Date.now();
@@ -3585,14 +4076,15 @@ async function probePlaybackAudioUrl(audioUrl, timeoutMs) {
       try { if (resp.body && typeof resp.body.cancel === 'function') await resp.body.cancel(); } catch (_) {}
     }
     const sample = chunks.length ? Buffer.concat(chunks, bytes).subarray(0, AUDIO_URL_PROBE_BYTES) : Buffer.alloc(0);
-    const magic = audioProbeMagic(sample);
+    const audioDetails = audioProbeDetails(sample);
+    const magic = audioDetails.magic;
     const contentLooksText = /text\/html|application\/(json|xml)|text\/plain/.test(contentType);
     return {
       ok: (status === 200 || status === 206) && sample.length >= 512 && !contentLooksText && !!magic,
       status,
       bytes: sample.length,
       contentType,
-      magic,
+      ...audioDetails,
     };
   } catch (err) {
     return {
@@ -3653,6 +4145,7 @@ async function handleQQSongUrl(mid, mediaMid, qualityPreference, playbackHints) 
   const probeFailures = [];
   let playableInfo = null;
   let playableUrl = '';
+  let playableProbe = null;
   for (let infoIndex = 0; infoIndex < purlInfos.length && !playableUrl; infoIndex++) {
     const candidateInfo = purlInfos[infoIndex];
     for (let sipIndex = 0; sipIndex < sips.length && !playableUrl; sipIndex++) {
@@ -3663,6 +4156,7 @@ async function handleQQSongUrl(mid, mediaMid, qualityPreference, playbackHints) 
       if (probe.ok) {
         playableInfo = candidateInfo;
         playableUrl = candidateUrl;
+        playableProbe = probe;
         break;
       }
       const probeMeta = fileCandidates.find(item => item.filename === candidateInfo.filename) || {};
@@ -3673,6 +4167,7 @@ async function handleQQSongUrl(mid, mediaMid, qualityPreference, playbackHints) 
   if (playableUrl && playableInfo) {
     const info = playableInfo;
     const fileMeta = fileCandidates.find(item => item.filename === info.filename) || {};
+    const actual = actualAudioQuality(playableProbe, fileMeta.br, fileMeta.level);
     return {
       provider: 'qq',
       url: playableUrl,
@@ -3683,8 +4178,14 @@ async function handleQQSongUrl(mid, mediaMid, qualityPreference, playbackHints) 
       userId: hasQQPlaybackSession ? uin : '',
       playbackKeyReady: !!(uin && playbackKey),
       vipRequired: memberTrackHint,
-      level: fileMeta.level || info.filename || '',
-      quality: fileMeta.label || info.filename || '',
+      level: actual.level || fileMeta.level || info.filename || '',
+      quality: actual.label || fileMeta.label || info.filename || '',
+      codec: actual.codec || fileMeta.codec || '',
+      br: Number(fileMeta.br || 0) || 0,
+      probeMagic: playableProbe && playableProbe.magic || '',
+      sampleRate: Number(playableProbe && playableProbe.sampleRate || 0) || 0,
+      bitDepth: Number(playableProbe && playableProbe.bitDepth || 0) || 0,
+      channels: Number(playableProbe && playableProbe.channels || 0) || 0,
       filename: info.filename || '',
       probeFailures: probeFailures.slice(0, 12),
       requestedQuality,
@@ -3802,8 +4303,8 @@ function decodeQQLyricText(text) {
 }
 
 function normalizeQQSongId(id) {
-  const n = String(id || '').replace(/\D/g, '');
-  return n ? Number(n) : 0;
+  const raw = String(id || '').trim();
+  return /^\d+$/.test(raw) ? Number(raw) : 0;
 }
 
 async function handleQQLyric(mid, id) {
@@ -3862,13 +4363,23 @@ async function handleQQLyric(mid, id) {
     }
   }
 
+  console.info('[QQLyric]', JSON.stringify({
+    mid: songMID || '',
+    id: songID || '',
+    source,
+    lyricChars: lyricText.length,
+    qrcChars: qrcText.length,
+    translatedChars: transText.length,
+  }));
+
   return {
     provider: 'qq',
     id: songID || '',
     mid: songMID,
     lyric: lyricText,
     tlyric: transText,
-    yrc: '',
+    // 客户端统一按 YRC 解析；QQ 的 qrc 与逐字 YRC 结构兼容。
+    yrc: qrcText,
     qrc: qrcText,
     roma: romaText,
     source: lyricText ? source : 'qq-empty',
@@ -4081,30 +4592,37 @@ async function resolveNeteaseDirectSongUrl(id, loginInfo, qualityPreference) {
         }
       }
       if (url && !freeTrial && probe && probe.ok) {
+        const actual = actualAudioQuality(probe, d.br, d.level);
         return {
           provider: 'netease',
           source: 'netease',
           url,
           trial: false,
           playable: true,
-          level: q.level,
-          quality: q.label,
+          level: actual.level || q.level,
+          quality: actual.label || q.label,
+          codec: actual.codec || '',
           br: d.br,
           requestedQuality,
           probeStatus: probe.status,
           probeBytes: probe.bytes,
           probeMagic: probe.magic,
+          sampleRate: probe.sampleRate || 0,
+          bitDepth: probe.bitDepth || 0,
+          channels: probe.channels || 0,
         };
       }
       if (url && freeTrial && probe && probe.ok && !trialFallback) {
+        const actual = actualAudioQuality(probe, d.br, d.level);
         trialFallback = {
           provider: 'netease',
           source: 'netease',
           url,
           trial: true,
           playable: true,
-          level: q.level,
-          quality: q.label,
+          level: actual.level || q.level,
+          quality: actual.label || q.label,
+          codec: actual.codec || '',
           br: d.br,
           requestedQuality,
           trialInfo: freeTrial,
@@ -4112,6 +4630,9 @@ async function resolveNeteaseDirectSongUrl(id, loginInfo, qualityPreference) {
           probeStatus: probe.status,
           probeBytes: probe.bytes,
           probeMagic: probe.magic,
+          sampleRate: probe.sampleRate || 0,
+          bitDepth: probe.bitDepth || 0,
+          channels: probe.channels || 0,
         };
       }
     } catch (err) {
@@ -5228,6 +5749,74 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
+  if (pn === '/api/qishui/login/qr/create') {
+    try {
+      const qr = await createQishuiPcQrLogin();
+      const rawExpiry = Number(qr.expireTime) || 0;
+      const expiresAt = rawExpiry > 1000000000000
+        ? rawExpiry
+        : (rawExpiry > 1000000000 ? rawExpiry * 1000 : Date.now() + Math.max(60, rawExpiry || 180) * 1000);
+      qishuiQrSessions.set(qr.token, {
+        cookie: qr.cookie || '',
+        passportNext: qr.passportNext || '',
+        passportIsFrontier: qr.passportIsFrontier,
+        expiresAt,
+      });
+      for (const [token, session] of qishuiQrSessions) {
+        if (Number(session.expiresAt) + 60000 < Date.now()) qishuiQrSessions.delete(token);
+      }
+      sendJSON(res, {
+        provider: 'qishui',
+        token: qr.token,
+        qrcode: qr.qrcode,
+        expireTime: expiresAt,
+        copywriting: qr.copywriting || '',
+      });
+    } catch (err) {
+      console.error('[QishuiQrCreate]', err);
+      const entryUnavailable = err && err.code === 'QISHUI_QR_ENTRY_UNAVAILABLE';
+      sendJSON(res, {
+        provider: 'qishui',
+        error: entryUnavailable ? 'QISHUI_QR_ENTRY_UNAVAILABLE' : err.message,
+        message: entryUnavailable ? err.message : '汽水二维码生成失败',
+        terminal: entryUnavailable,
+      }, entryUnavailable ? 503 : 500);
+    }
+    return;
+  }
+
+  if (pn === '/api/qishui/login/qr/check') {
+    try {
+      const token = url.searchParams.get('token') || '';
+      const session = qishuiQrSessions.get(token);
+      if (!session) {
+        sendJSON(res, { provider: 'qishui', error: 'QISHUI_QR_SESSION_EXPIRED', message: '汽水二维码已过期' }, 410);
+        return;
+      }
+      const result = await checkQishuiPcQrLogin(token, session.cookie, session);
+      session.cookie = result.pollCookie || session.cookie;
+      if (result.cookie) {
+        saveQishuiCookie(result.cookie);
+        qishuiQrSessions.delete(token);
+      }
+      sendJSON(res, {
+        provider: 'qishui',
+        status: result.status,
+        confirmed: result.confirmed,
+        loggedIn: !!result.cookie,
+        message: result.message,
+        needsSms: result.needsSms,
+        terminal: !!result.terminal,
+        retryAfterMs: result.retryAfterMs || 0,
+        errorCode: result.errorCode || 0,
+      });
+    } catch (err) {
+      console.error('[QishuiQrCheck]', err);
+      sendJSON(res, { provider: 'qishui', error: err.message, message: '汽水登录确认失败' }, 500);
+    }
+    return;
+  }
+
   if (pn === '/api/qishui/status' || pn === '/api/qishui/login/status') {
     try {
       sendJSON(res, await handleQishuiStatus(qishuiCookie));
@@ -5666,8 +6255,8 @@ const server = http.createServer(async (req, res) => {
       const raw = body.cookie || body.data || body.text || '';
       const normalized = normalizeQQCookieInput(raw);
       const obj = parseCookieString(normalized);
-      if (!qqCookieUin(obj) || !qqCookieMusicKey(obj)) {
-        sendJSON(res, { provider: 'qq', loggedIn: false, error: 'INVALID_QQ_COOKIE', message: 'QQ cookie 缺少 uin 或有效登录票据' }, 400);
+      if (!qqCookieUin(obj) || !qqCookiePlaybackKey(obj)) {
+        sendJSON(res, { provider: 'qq', loggedIn: false, playbackKeyReady: false, error: 'QQ_PLAYBACK_AUTH_INCOMPLETE', message: 'QQ 已登录，但未取得音乐播放凭证，请重新授权' }, 409);
         return;
       }
       saveQQCookie(normalized);
@@ -6417,6 +7006,32 @@ const server = http.createServer(async (req, res) => {
   }
 
   // ---------- 歌手主页 / 热门歌曲 ----------
+  if (pn === '/api/artist/search') {
+    try {
+      const keywords = url.searchParams.get('keywords') || '';
+      const limit = Math.max(1, Math.min(20, parseInt(url.searchParams.get('limit') || '6', 10) || 6));
+      sendJSON(res, await handleNeteaseArtistSearch(keywords, limit));
+    } catch (err) {
+      console.error('[ArtistSearch]', err);
+      sendJSON(res, { provider: 'netease', error: err.message, artists: [] }, 500);
+    }
+    return;
+  }
+
+  if (pn === '/api/artist/universe') {
+    try {
+      const id = url.searchParams.get('id');
+      const limit = Math.max(1, Math.min(60, parseInt(url.searchParams.get('limit') || '36', 10) || 36));
+      const includeSongs = url.searchParams.get('details') !== '0';
+      if (!id) { sendJSON(res, { error: 'Missing artist id', albums: [] }, 400); return; }
+      sendJSON(res, await handleNeteaseArtistUniverse(id, limit, includeSongs));
+    } catch (err) {
+      console.error('[ArtistUniverse]', err);
+      sendJSON(res, { error: err.message, albums: [] }, 500);
+    }
+    return;
+  }
+
   if (pn === '/api/artist/detail') {
     try {
       const id = url.searchParams.get('id');

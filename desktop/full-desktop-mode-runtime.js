@@ -444,6 +444,8 @@ function captureBrowserWindowState(win, screen) {
     movable: safeCall(win, 'isMovable', true) !== false,
     focusable: safeCall(win, 'isFocusable', true) !== false,
     hasShadow: safeCall(win, 'hasShadow', true) !== false,
+    alwaysOnTop: safeCall(win, 'isAlwaysOnTop', false) === true,
+    skipTaskbar: safeCall(win, 'isSkipTaskbar', false) === true,
     backgroundThrottling: safeCall(win && win.webContents, 'getBackgroundThrottling', true) !== false,
     minimumSize: safeCall(win, 'getMinimumSize', null),
     maximumSize: safeCall(win, 'getMaximumSize', null),
@@ -553,7 +555,7 @@ class FullDesktopModeRuntime {
   }
 
   isSupported() {
-    return this.platform === 'win32';
+    return this.platform === 'win32' || this.platform === 'darwin';
   }
 
   isEnabled() {
@@ -1598,6 +1600,11 @@ class FullDesktopModeRuntime {
     safeCall(win, 'setResizable', null, snapshot.resizable);
     safeCall(win, 'setMovable', null, snapshot.movable);
     safeCall(win, 'setHasShadow', null, snapshot.hasShadow);
+    if (this.platform === 'darwin') {
+      safeCall(win, 'setAlwaysOnTop', null, snapshot.alwaysOnTop, 'normal');
+      safeCall(win, 'setVisibleOnAllWorkspaces', null, false);
+      safeCall(win, 'setSkipTaskbar', null, snapshot.skipTaskbar);
+    }
     if (snapshot.maximized) safeCall(win, 'maximize', null);
     if (snapshot.fullScreen) safeCall(win, 'setFullScreen', null, true);
     if (snapshot.minimized) safeCall(win, 'minimize', null);
@@ -1658,6 +1665,29 @@ class FullDesktopModeRuntime {
       this.snapshot = captureBrowserWindowState(win, this.screen);
       this.phase = 'enabling';
       const display = this.displaySnapshot(win);
+      if (this.platform === 'darwin') {
+        this.prepareWindow(win, display.bounds, { hide: true });
+        safeCall(win, 'setAlwaysOnTop', null, true, 'desktop');
+        safeCall(win, 'setVisibleOnAllWorkspaces', null, true, {
+          visibleOnFullScreen: false,
+          skipTransformProcessType: true,
+        });
+        safeCall(win, 'setSkipTaskbar', null, true);
+        this.attachment = {
+          kind: 'mac-desktop',
+          displayId: display.displayId,
+          bounds: display.bounds,
+          workArea: display.workArea,
+          safeInsets: display.safeInsets,
+        };
+        this.enabled = true;
+        this.interactive = false;
+        this.applyPassive(win);
+        this.phase = 'passive';
+        this.lastError = '';
+        this.generation += 1;
+        return { ok: true, enabled: true, interactive: false, status: this.emitStatus(reason) };
+      }
       try {
         if (!interactive) await this.preparePassive(win, display, reason);
         if (this.disposed || this.disposeRequested || this.window !== win || !this.isWindowAlive(win)) {
@@ -1760,6 +1790,12 @@ class FullDesktopModeRuntime {
       };
     }
     if (!this.isWindowAlive()) throw new Error('FULL_DESKTOP_WINDOW_UNAVAILABLE');
+    if (this.platform === 'darwin') {
+      this.applyPassive(this.window);
+      this.interactive = false;
+      this.phase = 'passive';
+      return { ok: true, enabled: true, interactive: false, status: this.emitStatus(reason || 'mac-desktop-passive') };
+    }
     if (this.iconLayerRestoreUnconfirmed) {
       throw new Error('DESKTOP_ICON_LAYER_RESTORE_UNCONFIRMED');
     }
@@ -1864,6 +1900,21 @@ class FullDesktopModeRuntime {
       if (!this.enabled) return { ok: true, enabled: false, interactive: false, status: this.getStatus(reason) };
       if (!this.isWindowAlive()) throw new Error('FULL_DESKTOP_WINDOW_UNAVAILABLE');
       const display = this.displaySnapshot(this.window);
+      if (this.platform === 'darwin') {
+        safeCall(this.window, 'setBounds', null, display.bounds, false);
+        this.attachment = {
+          kind: 'mac-desktop',
+          displayId: display.displayId,
+          bounds: display.bounds,
+          workArea: display.workArea,
+          safeInsets: display.safeInsets,
+        };
+        this.applyPassive(this.window);
+        this.phase = 'passive';
+        this.lastError = '';
+        this.generation += 1;
+        return { ok: true, enabled: true, interactive: false, status: this.emitStatus(reason) };
+      }
       if (this.interactive) {
         return this.reconcileInteractiveInternal(reason);
       } else {
@@ -1936,7 +1987,7 @@ class FullDesktopModeRuntime {
       display = this.displaySnapshot(win);
       snapshot = this.snapshot || snapshot;
     } catch (_) { }
-    if (!knownInteractiveTopLevel) {
+    if (this.platform !== 'darwin' && !knownInteractiveTopLevel) {
       try {
         await this.detach(win, snapshot.physicalBounds || snapshot.bounds);
       } catch (error) {

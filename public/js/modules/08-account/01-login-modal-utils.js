@@ -58,6 +58,11 @@ function bindModalBackdropClose() {
     ['login-modal', closeLoginModal],
     ['user-modal', closeUserModal],
     ['audio-output-workflow-modal', closeAudioOutputWorkflowPanel],
+    ['cover-crop-modal', closeCoverCropModal],
+    ['background-crop-modal', cancelCustomBackgroundCropModal],
+    ['wallpaper-engine-modal', closeWallpaperEngineLibrary],
+    ['collect-modal', closeCollectModal],
+    ['local-beat-modal', closeLocalBeatModal],
     ['custom-lyric-modal', closeCustomLyricModal],
     ['update-modal', closeUpdatePanel]
   ].forEach(function (pair) {

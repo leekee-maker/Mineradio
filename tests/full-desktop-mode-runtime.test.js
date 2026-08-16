@@ -67,6 +67,8 @@ class FakeBrowserWindow extends EventEmitter {
     this.movable = true;
     this.focusable = true;
     this.skipTaskbar = false;
+    this.alwaysOnTop = false;
+    this.visibleOnAllWorkspaces = false;
     this.shadowEnabled = options.hasShadow !== false;
     this.ignoreMouse = false;
     this.shape = [];
@@ -81,6 +83,8 @@ class FakeBrowserWindow extends EventEmitter {
   isVisible() { return this.visible; }
   isFocused() { return this.focused; }
   hasShadow() { return this.shadowEnabled; }
+  isAlwaysOnTop() { return this.alwaysOnTop; }
+  isSkipTaskbar() { return this.skipTaskbar; }
   getBounds() { return { ...this.bounds }; }
   getNormalBounds() { return { ...this.normalBounds }; }
   getMinimumSize() { return this.minimumSize.slice(); }
@@ -106,6 +110,8 @@ class FakeBrowserWindow extends EventEmitter {
   setMovable(value) { this.movable = !!value; this.calls.push(['setMovable', !!value]); }
   setFocusable(value) { this.focusable = !!value; this.calls.push(['setFocusable', !!value]); }
   setSkipTaskbar(value) { this.skipTaskbar = !!value; this.calls.push(['setSkipTaskbar', !!value]); }
+  setAlwaysOnTop(value, level) { this.alwaysOnTop = !!value; this.calls.push(['setAlwaysOnTop', !!value, level]); }
+  setVisibleOnAllWorkspaces(value, options) { this.visibleOnAllWorkspaces = !!value; this.calls.push(['setVisibleOnAllWorkspaces', !!value, options]); }
   setHasShadow(value) { this.shadowEnabled = !!value; this.calls.push(['setHasShadow', !!value]); }
 
   setIgnoreMouseEvents(value, options) {
@@ -164,7 +170,7 @@ function makeRuntime(options = {}) {
 
   const runtime = new FullDesktopModeRuntime({
     screen,
-    platform: 'win32',
+    platform: options.platform || 'win32',
     nativeTempPath: 'D:\\MineradioCache\\native-helper-temp',
     requestReconcile: typeof options.requestReconcile === 'function'
       ? options.requestReconcile
@@ -1172,4 +1178,31 @@ test('stale setInteractive after disable does not poison the disabled phase', as
   assert.equal(status.enabled, false);
   assert.equal(status.phase, 'disabled');
   assert.equal(status.lastError, '');
+});
+
+test('macOS desktop mode places the main window on the desktop layer and restores it', async () => {
+  const win = new FakeBrowserWindow();
+  const originalBounds = win.getBounds();
+  const { runtime, calls } = makeRuntime({ platform: 'darwin' });
+
+  const enabled = await runtime.enable(win, { interactive: true, reason: 'mac-preview' });
+  assert.equal(enabled.ok, true);
+  assert.equal(enabled.interactive, false);
+  assert.equal(runtime.getStatus('mac-enabled').supported, true);
+  assert.equal(runtime.getStatus('mac-enabled').embedded, true);
+  assert.equal(win.alwaysOnTop, true);
+  assert.equal(win.visibleOnAllWorkspaces, true);
+  assert.equal(win.skipTaskbar, true);
+  assert.equal(win.ignoreMouse, true);
+  assert.equal(win.focusable, false);
+  assert.equal(calls.attach.length, 0);
+  assert.equal(calls.coexist.length, 0);
+
+  const disabled = await runtime.disable('mac-preview-done');
+  assert.equal(disabled.ok, true);
+  assert.equal(win.alwaysOnTop, false);
+  assert.equal(win.visibleOnAllWorkspaces, false);
+  assert.equal(win.skipTaskbar, false);
+  assert.equal(win.ignoreMouse, false);
+  assert.deepEqual(win.getBounds(), originalBounds);
 });

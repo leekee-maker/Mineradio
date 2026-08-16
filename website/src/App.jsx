@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import {
   AppleLogo,
-  ArrowDown,
   ArrowUpRight,
   DownloadSimple,
   GithubLogo,
@@ -11,6 +10,7 @@ import {
   Waveform,
   WindowsLogo,
 } from "@phosphor-icons/react";
+import { UniversePrototype } from "./UniversePrototype.jsx";
 
 const WINDOWS_URL = import.meta.env.VITE_WINDOWS_DOWNLOAD_URL ||
   "/downloads/SelfRadio-2.0.3-Windows-x64-Setup.exe";
@@ -50,6 +50,7 @@ function DownloadButton({ item, featured }) {
 }
 
 export function App() {
+  if (window.location.pathname === "/universe") return <UniversePrototype />;
   const [platform, setPlatform] = useState("");
 
   useEffect(() => {
@@ -65,12 +66,12 @@ export function App() {
     <main>
       <header className="site-header">
         <a className="mini-brand" href="#top" aria-label="SelfRadio 首页">
-          <img src={`${ASSET_BASE}assets/selfradio-icon-sr.png`} alt="" />
+          <img src={`${ASSET_BASE}assets/selfradio-icon-v5.png`} alt="" />
           <Brand />
         </a>
         <nav aria-label="主导航">
-          <a href="#experience">功能</a>
           <a href="#download">下载</a>
+          <a href="/universe">音乐宇宙</a>
           <a href="https://github.com/leekee-maker/Mineradio" target="_blank" rel="noreferrer">
             GitHub <ArrowUpRight size={14} weight="bold" />
           </a>
@@ -94,32 +95,10 @@ export function App() {
           <div className="release-meta">
             <span>当前版本 · v2.0.3</span><i aria-hidden="true" /><span>更新于 · 2026-07-29</span>
           </div>
-          <a className="release-link" href="https://github.com/leekee-maker/Mineradio/releases"
-            target="_blank" rel="noreferrer">
-            查看更新日志 <ArrowUpRight size={14} weight="bold" />
-          </a>
           <p className="trust-line">
             <ShieldCheck size={18} weight="fill" aria-hidden="true" />
             开源透明 · 无广告 · 尊重隐私
           </p>
-        </div>
-        <a className="scroll-cue" href="#experience" aria-label="继续浏览">
-          <ArrowDown size={20} weight="bold" />
-        </a>
-      </section>
-
-      <section className="product-showcase" id="experience">
-        <div className="showcase-window">
-          <div className="window-bar">
-            <span className="window-brand"><Brand /></span>
-            <span className="window-controls" aria-hidden="true">—　□　×</span>
-          </div>
-          <img src={`${ASSET_BASE}assets/selfradio-preview.png`} alt="SelfRadio 沉浸式播放器启动界面" />
-        </div>
-        <div className="showcase-copy">
-          <p className="eyebrow">沉浸体验</p>
-          <h2>为每一次聆听，搭建舞台</h2>
-          <p>歌词随声浮现，粒子随节奏舞动，多平台音乐一处汇聚。</p>
         </div>
       </section>
 
@@ -135,22 +114,9 @@ export function App() {
         })}
       </section>
 
-      <section className="closing-download">
-        <p className="eyebrow">READY TO LISTEN</p>
-        <h2>现在，进入你的音乐现场</h2>
-        <div className="closing-actions">
-          {orderedDownloads.map((item) => {
-            const Icon = item.icon;
-            return <a key={item.id} href={item.href} download>
-              <Icon size={22} weight="fill" />{item.label}
-            </a>;
-          })}
-        </div>
-      </section>
-
       <footer>
         <div className="footer-brand">
-          <img src={`${ASSET_BASE}assets/selfradio-icon-sr.png`} alt="" />
+          <img src={`${ASSET_BASE}assets/selfradio-icon-v5.png`} alt="" />
           <div><Brand /><small>radio.remjdor.cn</small></div>
         </div>
         <p>© 2026 SelfRadio. GPL-3.0 开源软件。</p>

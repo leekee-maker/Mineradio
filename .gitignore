@@ -45,6 +45,8 @@ backups/
 *.cache
 .env
 .env.*
+ios/SelfRadioIOS/SelfRadioSecrets.xcconfig
+ios/SelfRadioIOS/SelfRadioIOS/SelfRadioSecrets.swift
 
 # Local development noise
 .DS_Store
@@ -65,3 +67,11 @@ tmp/
 *.png.tmp
 verification/
 screenshots/
+
+# Xcode/Swift build caches and local derived data
+.build/
+ios/SelfRadioIOS/build/
+ios/SelfRadioIOS/device-build/
+ios/SelfRadioIOS/**/DerivedData/
+ios/SelfRadioIOS/**/.derivedData*/
+ios/SelfRadioIOS/**/xcuserdata/

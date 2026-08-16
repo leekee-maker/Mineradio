@@ -242,6 +242,7 @@ function testDesktopReauthCookieSelectionAndBudgets() {
   const playbackSource = fs.readFileSync(path.join(ROOT, 'public/js/modules/05-playback/13-playback-start-audio.js'), 'utf8');
   const prefetchSource = fs.readFileSync(path.join(ROOT, 'public/js/modules/03-beat/00-tempo-worker-cache-prefetch.js'), 'utf8');
   const accountSource = fs.readFileSync(path.join(ROOT, 'public/js/modules/08-account/02-login-status.js'), 'utf8');
+  const iosQQLoginSource = fs.readFileSync(path.join(ROOT, 'ios/SelfRadioIOS/SelfRadioIOS/QQLoginView.swift'), 'utf8');
 
   assert(/openQQMusicLoginWindow\(owner, options\)/.test(mainSource));
   assert(/options\.forceReauth[\s\S]{0,180}clearStorageData/.test(mainSource));
@@ -288,6 +289,17 @@ function testDesktopReauthCookieSelectionAndBudgets() {
   assert(!/member-track-playback/.test(serverSource));
   assert(/function qqPlaybackShowsMemberAccess[\s\S]{0,260}return false;/.test(accountSource));
   assert(!/writeQQPlaybackVipEvidence\(Object\.assign\(\{\}, merged/.test(accountSource));
+  assert(!/location\.href\s*=\s*frame\.src/.test(iosQQLoginSource), 'iOS must preserve the QQ Music parent page login callback');
+  assert(/frame\.style\.position\s*=\s*'fixed'/.test(iosQQLoginSource), 'iOS should enlarge the login iframe without detaching it');
+
+  const qqCookieRoute = serverSource.slice(
+    serverSource.indexOf("if (pn === '/api/qq/login/cookie')"),
+    serverSource.indexOf("if (pn === '/api/qq/logout')")
+  );
+  assert(
+    /!qqCookieUin\(obj\)\s*\|\|\s*!qqCookiePlaybackKey\(obj\)/.test(qqCookieRoute),
+    'QQ cookie binding must require a playback key, not only a web login ticket'
+  );
 
   const fallbackSource = fs.readFileSync(path.join(ROOT, 'public/js/modules/05-playback/11-provider-fallback.js'), 'utf8');
   assert(/membershipUnknown[\s\S]{0,700}!membershipUnknown/.test(fallbackSource));
@@ -302,12 +314,27 @@ function testPackagingIncludesQQVipModule() {
   assert(/-api\.js$/.test(path.basename(require.resolve('../qq-vip-api'))));
 }
 
+function testIOSQQLibraryAndPlaybackContract() {
+  const apiSource = fs.readFileSync(path.join(ROOT, 'ios/SelfRadioIOS/SelfRadioIOS/PlatformService.swift'), 'utf8');
+  const rootSource = fs.readFileSync(path.join(ROOT, 'ios/SelfRadioIOS/SelfRadioIOS/RootView.swift'), 'utf8');
+  const playerSource = fs.readFileSync(path.join(ROOT, 'ios/SelfRadioIOS/SelfRadioIOS/PlayerStore.swift'), 'utf8');
+  const librarySource = rootSource.slice(rootSource.indexOf('private struct LibraryView'), rootSource.indexOf('private struct LibraryShortcut'));
+
+  assert(/api\/qq\/user\/playlists/.test(apiSource), 'iOS must request the real QQ playlist collection');
+  assert(/api\/qq\/playlist\/tracks/.test(apiSource), 'iOS must request tracks for a selected QQ playlist');
+  assert(/SelfRadioAPI\.shared\.playlists\(for:\s*provider\)/.test(librarySource), 'the iOS library screen must load the selected platform playlists, including QQ');
+  assert(!/Song\.previews/.test(librarySource), 'the iOS library must not display preview songs as the user collection');
+  assert(/resolvedAudioURL/.test(playerSource), 'iOS playback must use the source resolver');
+  assert(/provider:\s*\.netease/.test(apiSource), 'QQ playback must support a NetEase fallback source');
+}
+
 async function main() {
   testStrictMembershipNormalization();
   await testAllProbeAggregationAndNegativeQuorum();
   testSessionScopedCacheFingerprintAndExpiry();
   await testTransientFrontendFailureKeepsLastKnownGood();
   testDesktopReauthCookieSelectionAndBudgets();
+  testIOSQQLibraryAndPlaybackContract();
   testPackagingIncludesQQVipModule();
   console.log('[OK] QQ VIP entitlement regression tests passed');
 }

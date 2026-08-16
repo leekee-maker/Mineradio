@@ -65,7 +65,8 @@ test('discover home returns the complete mapped daily list without a fixed song 
   assert.ok(discoverSource, 'expected handleDiscoverHome()');
   assert.match(discoverSource, /dailySongs\s*=\s*mapDailyRecommendationSongs\(raw\)/);
   assert.doesNotMatch(discoverSource, /dailySongs[\s\S]{0,300}\.slice\s*\(\s*0\s*,\s*(?:8|12)\s*\)/);
-  assert.match(discoverSource, /dailySongTotal:\s*dailySongs\.length/);
+  assert.match(discoverSource, /dailySongs:\s*featuredSongs/);
+  assert.match(discoverSource, /dailySongTotal:\s*featuredSongs\.length/);
   assert.match(discoverSource, /dailySongsComplete:\s*true/);
 });
 
@@ -73,4 +74,63 @@ test('discover home does not request or return recommended podcasts', () => {
   const discoverSource = namedFunctionSource(source, 'handleDiscoverHome');
   assert.doesNotMatch(discoverSource, /\bdj_hot\s*\(/);
   assert.match(discoverSource, /podcasts:\s*\[\]/);
+});
+
+test('discover home aggregates QQ hot playlists and exposes cross-platform trending songs', () => {
+  const publicSource = namedFunctionSource(source, 'fetchDiscoverPublicSections');
+  const discoverSource = namedFunctionSource(source, 'handleDiscoverHome');
+  assert.match(publicSource, /fetchQQHotPlaylists\(/);
+  assert.match(publicSource, /qqHotPlaylists/);
+  assert.match(discoverSource, /trendingSongs:\s*publicContent\.trendingSongs/);
+});
+
+test('discover home removes duplicate playlists across sections', () => {
+  const dedupeSource = namedFunctionSource(source, 'deduplicateDiscoverSections');
+  const discoverSource = namedFunctionSource(source, 'handleDiscoverHome');
+  assert.ok(dedupeSource, 'expected deduplicateDiscoverSections()');
+  const dedupe = vm.runInNewContext(`(${dedupeSource})`);
+  const sections = dedupe([
+    { id: 'for-you', playlists: [{ provider: 'netease', id: '1' }, { provider: 'qq', id: '1' }] },
+    { id: 'hot', playlists: [{ provider: 'netease', id: '1' }, { provider: 'qq', id: '2' }] },
+  ]);
+  assert.deepEqual(Array.from(sections, section => Array.from(section.playlists, item => `${item.provider}:${item.id}`)), [
+    ['netease:1', 'qq:1'],
+    ['qq:2'],
+  ]);
+  assert.match(discoverSource, /deduplicateDiscoverSections\(sections\)/);
+});
+
+test('discover home keeps a broader chart catalog and returns secure NetEase covers', () => {
+  const publicSource = namedFunctionSource(source, 'fetchDiscoverPublicSections');
+  const mapperSource = namedFunctionSource(source, 'mapDiscoverPlaylist');
+  assert.match(publicSource, /\.slice\(0,\s*12\)/);
+  assert.match(publicSource, /charts:\s*charts\.slice\(0,\s*18\)/);
+
+  const mapper = vm.runInNewContext(`(${mapperSource})`, {
+    normalizeCoverUrl(value) {
+      return String(value || '').replace(/^http:\/\//i, 'https://');
+    },
+  });
+  const playlist = mapper({
+    id: 'chart-1',
+    name: '网易云热歌榜',
+    coverImgUrl: 'http://p1.music.126.net/chart.jpg',
+  }, '官方榜单');
+  assert.equal(playlist.cover, 'https://p1.music.126.net/chart.jpg');
+});
+
+test('QQ charts expose only tracks confirmed playable for the current account', () => {
+  const selectorSource = namedFunctionSource(source, 'selectPlayableQQTracks');
+  const toplistSource = namedFunctionSource(source, 'handleQQToplistTracks');
+  const playlistSource = namedFunctionSource(source, 'handleQQPlaylistTracks');
+  assert.ok(selectorSource, 'expected selectPlayableQQTracks()');
+  const selector = vm.runInNewContext(`(${selectorSource})`);
+  const selected = selector([
+    { id: 'playable', name: '可播歌曲' },
+    { id: 'blocked', name: '版权受限' },
+    { id: 'placeholder', name: '异常加载中' },
+  ], new Set(['playable', 'placeholder']));
+  assert.deepEqual(Array.from(selected, song => song.id), ['playable']);
+  assert.match(toplistSource, /await\s+filterPlayableQQTracks\(tracks\)/);
+  assert.match(playlistSource, /await\s+filterPlayableQQTracks\(tracks\)/);
 });

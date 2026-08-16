@@ -250,7 +250,11 @@ function toggleControlsAutoHide() {
   controlsAutoHide = !controlsAutoHide;
   saveBooleanPreference(CONTROLS_AUTO_HIDE_STORE_KEY, controlsAutoHide);
   var btn = document.getElementById('controls-hide-btn');
-  if (btn) btn.classList.toggle('active', controlsAutoHide);
+  if (btn) {
+    btn.classList.toggle('active', !controlsAutoHide);
+    btn.setAttribute('aria-pressed', String(!controlsAutoHide));
+    btn.title = controlsAutoHide ? '固定播放控制条' : '取消固定，恢复自动隐藏';
+  }
   setControlsHidden(false);
   if (controlsAutoHide) {
     scheduleControlsHide(520);
@@ -263,7 +267,11 @@ function toggleControlsAutoHide() {
 
 function applyControlsAutoHidePreference() {
   var btn = document.getElementById('controls-hide-btn');
-  if (btn) btn.classList.toggle('active', !!controlsAutoHide);
+  if (btn) {
+    btn.classList.toggle('active', !controlsAutoHide);
+    btn.setAttribute('aria-pressed', String(!controlsAutoHide));
+    btn.title = controlsAutoHide ? '固定播放控制条' : '取消固定，恢复自动隐藏';
+  }
   if (!controlsAutoHide && controlsHideTimer) {
     clearTimeout(controlsHideTimer);
     controlsHideTimer = null;

@@ -1,0 +1,361 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		29BEF97D9C8779445C27DC2F /* QQLoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBECF8E2287910EDA1CC6787 /* QQLoginView.swift */; };
+		300BB8F653AEB0C978A6C7DB /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = E205C4D3D42ABCA2665C8964 /* Models.swift */; };
+		7869B255E1F22F7BC4178FEE /* PlayerStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE41E195F48337C720701C1D /* PlayerStore.swift */; };
+		88BABA5867DDE9128F13F8B3 /* AccountStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35C7DE0B00BA08F5148F2A26 /* AccountStore.swift */; };
+		8FA8C6051D38DAEE56231190 /* SelfRadioSecrets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DCD8FFE606E22EF5D91681F /* SelfRadioSecrets.swift */; };
+		A3994A65A300FFB6DF4D672A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 42EAC488F8A328B9C51698FC /* Assets.xcassets */; };
+		CB7FDB5C80503EFFDCD02C9E /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4552686E7DE0F4FFFBBE7CE7 /* RootView.swift */; };
+		DD9D934557C67445E631D70F /* PlatformService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FE396DD7EFC96CEDCC2E03 /* PlatformService.swift */; };
+		E81F5399D7406D0E6E8A2FC2 /* SelfRadioIOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35C9AF334EE05D72597C17FC /* SelfRadioIOSApp.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		1DCD8FFE606E22EF5D91681F /* SelfRadioSecrets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelfRadioSecrets.swift; sourceTree = "<group>"; };
+		35C7DE0B00BA08F5148F2A26 /* AccountStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountStore.swift; sourceTree = "<group>"; };
+		35C9AF334EE05D72597C17FC /* SelfRadioIOSApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelfRadioIOSApp.swift; sourceTree = "<group>"; };
+		42EAC488F8A328B9C51698FC /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		4552686E7DE0F4FFFBBE7CE7 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
+		B4FE396DD7EFC96CEDCC2E03 /* PlatformService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlatformService.swift; sourceTree = "<group>"; };
+		BE41E195F48337C720701C1D /* PlayerStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerStore.swift; sourceTree = "<group>"; };
+		CBECF8E2287910EDA1CC6787 /* QQLoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QQLoginView.swift; sourceTree = "<group>"; };
+		CC9281332C3F45CFCCF29590 /* SelfRadioIOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SelfRadioIOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		DA5DE323B65C0B6616713D17 /* SelfRadioSecrets.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = SelfRadioSecrets.xcconfig; sourceTree = "<group>"; };
+		E205C4D3D42ABCA2665C8964 /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		73969B2DC33DECC4A544D9EA = {
+			isa = PBXGroup;
+			children = (
+				AAF43A2BE2A0F667771D8652 /* SelfRadioIOS */,
+				AF7889F9C66269F9164DD884 /* SelfRadioIOS */,
+				A9D420959C2BC0F33B0FF790 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		A9D420959C2BC0F33B0FF790 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				CC9281332C3F45CFCCF29590 /* SelfRadioIOS.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		AAF43A2BE2A0F667771D8652 /* SelfRadioIOS */ = {
+			isa = PBXGroup;
+			children = (
+				35C7DE0B00BA08F5148F2A26 /* AccountStore.swift */,
+				42EAC488F8A328B9C51698FC /* Assets.xcassets */,
+				E205C4D3D42ABCA2665C8964 /* Models.swift */,
+				B4FE396DD7EFC96CEDCC2E03 /* PlatformService.swift */,
+				BE41E195F48337C720701C1D /* PlayerStore.swift */,
+				CBECF8E2287910EDA1CC6787 /* QQLoginView.swift */,
+				4552686E7DE0F4FFFBBE7CE7 /* RootView.swift */,
+				35C9AF334EE05D72597C17FC /* SelfRadioIOSApp.swift */,
+				1DCD8FFE606E22EF5D91681F /* SelfRadioSecrets.swift */,
+			);
+			path = SelfRadioIOS;
+			sourceTree = "<group>";
+		};
+		AF7889F9C66269F9164DD884 /* SelfRadioIOS */ = {
+			isa = PBXGroup;
+			children = (
+				DA5DE323B65C0B6616713D17 /* SelfRadioSecrets.xcconfig */,
+			);
+			name = SelfRadioIOS;
+			path = .;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		C7D47075203A9BE759D8EE1D /* SelfRadioIOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A406292F27E95436C868289D /* Build configuration list for PBXNativeTarget "SelfRadioIOS" */;
+			buildPhases = (
+				6936135FC609EC17AE97940C /* Sources */,
+				C5B00C03AEEC60334C026216 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = SelfRadioIOS;
+			packageProductDependencies = (
+			);
+			productName = SelfRadioIOS;
+			productReference = CC9281332C3F45CFCCF29590 /* SelfRadioIOS.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		85E5EC014E2FCE12C4185550 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1430;
+				TargetAttributes = {
+					C7D47075203A9BE759D8EE1D = {
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = 3950FFE0F825157CE3EC7A5B /* Build configuration list for PBXProject "SelfRadioIOS" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = 73969B2DC33DECC4A544D9EA;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = A9D420959C2BC0F33B0FF790 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				C7D47075203A9BE759D8EE1D /* SelfRadioIOS */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		C5B00C03AEEC60334C026216 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A3994A65A300FFB6DF4D672A /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		6936135FC609EC17AE97940C /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				88BABA5867DDE9128F13F8B3 /* AccountStore.swift in Sources */,
+				300BB8F653AEB0C978A6C7DB /* Models.swift in Sources */,
+				DD9D934557C67445E631D70F /* PlatformService.swift in Sources */,
+				7869B255E1F22F7BC4178FEE /* PlayerStore.swift in Sources */,
+				29BEF97D9C8779445C27DC2F /* QQLoginView.swift in Sources */,
+				CB7FDB5C80503EFFDCD02C9E /* RootView.swift in Sources */,
+				E81F5399D7406D0E6E8A2FC2 /* SelfRadioIOSApp.swift in Sources */,
+				8FA8C6051D38DAEE56231190 /* SelfRadioSecrets.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		2F41D8796D7F12090F4C06B5 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = DA5DE323B65C0B6616713D17 /* SelfRadioSecrets.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = LPV2RX8PL3;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = SelfRadioIOS/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "随心听";
+				INFOPLIST_KEY_NSAppTransportSecurity_NSAllowsLocalNetworking = YES;
+				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "保存 QQ 音乐登录二维码，便于同一部手机从 QQ 相册识别登录";
+				INFOPLIST_KEY_SelfRadioAPIBaseURL = "$(SELF_RADIO_API_BASE_URL)";
+				INFOPLIST_KEY_SelfRadioAPIToken = "$(SELF_RADIO_API_TOKEN)";
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = cn.remjdor.selfradio;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		6A2F17383157513A886D1773 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 6.0;
+			};
+			name = Debug;
+		};
+		EE5F210208A9183F4274E46E /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = DA5DE323B65C0B6616713D17 /* SelfRadioSecrets.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = LPV2RX8PL3;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = SelfRadioIOS/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "随心听";
+				INFOPLIST_KEY_NSAppTransportSecurity_NSAllowsLocalNetworking = YES;
+				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "保存 QQ 音乐登录二维码，便于同一部手机从 QQ 相册识别登录";
+				INFOPLIST_KEY_SelfRadioAPIBaseURL = "$(SELF_RADIO_API_BASE_URL)";
+				INFOPLIST_KEY_SelfRadioAPIToken = "$(SELF_RADIO_API_TOKEN)";
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = cn.remjdor.selfradio;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+		FE249DC5CCAB6A8B4537AD69 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 6.0;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		3950FFE0F825157CE3EC7A5B /* Build configuration list for PBXProject "SelfRadioIOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				6A2F17383157513A886D1773 /* Debug */,
+				FE249DC5CCAB6A8B4537AD69 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		A406292F27E95436C868289D /* Build configuration list for PBXNativeTarget "SelfRadioIOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2F41D8796D7F12090F4C06B5 /* Debug */,
+				EE5F210208A9183F4274E46E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 85E5EC014E2FCE12C4185550 /* Project object */;
+}

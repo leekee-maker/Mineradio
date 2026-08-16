@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>随心听 · 3D 星空歌词 Demo</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="stage">
+      <canvas id="stars" aria-hidden="true"></canvas>
+
+      <section class="topbar">
+        <div>
+          <p class="eyebrow">LYRICS VISUAL MODE</p>
+          <h1>星空字幕</h1>
+        </div>
+        <button id="modeToggle" class="pill" type="button">切换：平铺</button>
+      </section>
+
+      <section class="song">
+        <div class="cover">
+          <span>♪</span>
+        </div>
+        <div>
+          <h2>小小的太阳</h2>
+          <p>张宇</p>
+        </div>
+      </section>
+
+      <section id="lyricsViewport" class="lyrics-viewport crawl-mode" aria-label="歌词">
+        <div id="lyricsTrack" class="lyrics-track"></div>
+      </section>
+
+      <section class="transport">
+        <div class="progress-row">
+          <span id="currentTime">0:00</span>
+          <input id="progress" type="range" min="0" max="1000" value="0" />
+          <span id="duration">0:44</span>
+        </div>
+        <div class="controls">
+          <button type="button" aria-label="随机播放">⤨</button>
+          <button type="button" aria-label="上一首">◀◀</button>
+          <button id="playToggle" class="primary" type="button" aria-label="播放或暂停">Ⅱ</button>
+          <button type="button" aria-label="下一首">▶▶</button>
+          <button type="button" aria-label="播放队列">♬</button>
+        </div>
+      </section>
+    </main>
+
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>

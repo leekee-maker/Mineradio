@@ -23,6 +23,8 @@ document.addEventListener('keydown', function (e) {
   if (isTypingTarget(e.target)) return;
   if (handleConfiguredLocalHotkey(e)) return;
   if (shouldSuppressDefaultConfiguredHotkey(e)) return;
+  if (typeof handleShelfEnterAction === 'function' && handleShelfEnterAction(e)) return;
+  if (typeof handleShelfArrowNavigation === 'function' && handleShelfArrowNavigation(e)) return;
   if (e.code === 'Space') {
     e.preventDefault();
     e.stopPropagation();

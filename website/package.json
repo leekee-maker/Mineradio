@@ -14,6 +14,7 @@
     "@vitejs/plugin-react": "5.0.4",
     "react": "19.2.0",
     "react-dom": "19.2.0",
+    "three": "file:../three.js",
     "vite": "6.4.2"
   }
 }

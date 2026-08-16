@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="410" height="900" viewBox="0 0 410 900">
+<defs>
+    <linearGradient id="board" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#101521"/><stop offset="1" stop-color="#07090F"/></linearGradient>
+    <linearGradient id="brand" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#45D9FF"/><stop offset=".48" stop-color="#9D6BFF"/><stop offset="1" stop-color="#FF4F9D"/></linearGradient>
+    <linearGradient id="brandSoft" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#45D9FF" stop-opacity=".42"/><stop offset="1" stop-color="#FF4F9D" stop-opacity=".18"/></linearGradient>
+    <linearGradient id="coverA" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#00D1FF"/><stop offset=".48" stop-color="#6157FF"/><stop offset="1" stop-color="#FF3F82"/></linearGradient>
+    <linearGradient id="coverB" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#FFC46A"/><stop offset=".5" stop-color="#FF6B8A"/><stop offset="1" stop-color="#6A4CFF"/></linearGradient>
+    <radialGradient id="stage" cx="50%" cy="34%" r="72%"><stop stop-color="#7756FF" stop-opacity=".72"/><stop offset=".55" stop-color="#142947" stop-opacity=".34"/><stop offset="1" stop-color="#090B12" stop-opacity="0"/></radialGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="160%"><feDropShadow dx="0" dy="22" stdDeviation="24" flood-color="#000" flood-opacity=".48"/></filter>
+    <filter id="blur"><feGaussianBlur stdDeviation="26"/></filter>
+    <style>
+      .phone{fill:#0B0E15;stroke:#2C3342;stroke-width:2}.screenTitle{font:700 30px -apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif;fill:#F7F9FF}.h1{font:800 34px -apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif;fill:#fff}.h2{font:700 20px -apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif;fill:#F7F9FF}.body{font:500 15px -apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif;fill:#E6EAF4}.sub{font:500 13px -apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif;fill:#8992A5}.tiny{font:600 11px -apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif;fill:#8992A5;letter-spacing:.4px}.accent{fill:#45D9FF}.card{fill:#151A24;stroke:#2B3342;stroke-width:1}.glass{fill:#18202D;fill-opacity:.84;stroke:#3A4659;stroke-width:1}.divider{stroke:#2A3140;stroke-width:1}.pill{fill:#1A2230;stroke:#364256;stroke-width:1}.label{font:700 12px -apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif;fill:#DCE3F2}.nav{font:600 11px -apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif;fill:#737D91}.navOn{font:700 11px -apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif;fill:#45D9FF}.white{fill:#fff}.muted{fill:#8992A5}.cyan{fill:#45D9FF}.pink{fill:#FF5A9E}.green{fill:#42E682}
+    </style>
+  </defs>
+<g transform="translate(0 0)" filter="url(#shadow)">
+    <rect width="410" height="900" rx="48" class="phone"/>
+    <text x="28" y="52" class="tiny">9:41</text><text x="326" y="52" class="tiny">5G  ●  97%</text>
+    <text x="24" y="108" class="screenTitle">搜索</text>
+    <rect x="22" y="132" width="366" height="54" rx="18" class="card"/><text x="42" y="166" class="sub">⌕  搜索歌曲、歌手、专辑或歌单</text>
+    <rect x="22" y="204" width="80" height="36" rx="18" fill="#45D9FF"/><text x="46" y="227" class="label" fill="#0B0E15">全部</text><rect x="110" y="204" width="88" height="36" rx="18" class="pill"/><text x="129" y="227" class="label">QQ音乐</text><rect x="206" y="204" width="80" height="36" rx="18" class="pill"/><text x="222" y="227" class="label">网易云</text><rect x="294" y="204" width="70" height="36" rx="18" class="pill"/><text x="311" y="227" class="label">汽水</text>
+    <text x="24" y="288" class="h2">搜索结果</text><text x="318" y="288" class="sub">共 48 首</text>
+    <g transform="translate(22 312)"><rect width="366" height="82" rx="18" class="card"/><rect x="12" y="12" width="58" height="58" rx="14" fill="url(#coverB)"/><text x="88" y="36" class="body">富士山下</text><text x="88" y="60" class="sub">陈奕迅 · QQ音乐</text><rect x="286" y="24" width="40" height="24" rx="12" fill="#6C4CFF" opacity=".25"/><text x="297" y="41" class="tiny" fill="#C5B7FF">SQ</text><text x="342" y="48" class="body">▶</text></g>
+    <g transform="translate(22 406)"><rect width="366" height="82" rx="18" class="card"/><rect x="12" y="12" width="58" height="58" rx="14" fill="url(#coverA)"/><text x="88" y="36" class="body">爱情转移</text><text x="88" y="60" class="sub">陈奕迅 · 网易云</text><rect x="286" y="24" width="40" height="24" rx="12" fill="#45D9FF" opacity=".18"/><text x="296" y="41" class="tiny" fill="#7AE6FF">Hi-Res</text><text x="342" y="48" class="body">▶</text></g>
+    <g transform="translate(22 500)"><rect width="366" height="82" rx="18" class="card"/><rect x="12" y="12" width="58" height="58" rx="14" fill="#242C3A"/><text x="88" y="36" class="body">十年</text><text x="88" y="60" class="sub">陈奕迅 · 汽水</text><text x="342" y="48" class="body">▶</text></g>
+    <rect x="22" y="730" width="366" height="76" rx="20" class="glass"/><rect x="34" y="742" width="52" height="52" rx="14" fill="url(#coverB)"/><text x="102" y="766" class="body">富士山下</text><text x="102" y="788" class="sub">陈奕迅</text><text x="346" y="778" class="body cyan">▶</text>
+    <line x1="20" y1="824" x2="390" y2="824" class="divider"/><text x="50" y="856" class="nav">⌂  首页</text><text x="138" y="856" class="navOn">⌕  搜索</text><text x="228" y="856" class="nav">♫  音乐库</text><text x="327" y="856" class="nav">⚙  设置</text>
+    <text x="20" y="886" class="tiny">02 · UNIFIED SEARCH</text>
+  </g>
+</svg>
