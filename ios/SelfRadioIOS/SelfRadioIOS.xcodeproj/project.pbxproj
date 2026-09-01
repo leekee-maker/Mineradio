@@ -9,25 +9,30 @@
 /* Begin PBXBuildFile section */
 		29BEF97D9C8779445C27DC2F /* QQLoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBECF8E2287910EDA1CC6787 /* QQLoginView.swift */; };
 		300BB8F653AEB0C978A6C7DB /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = E205C4D3D42ABCA2665C8964 /* Models.swift */; };
+		4BA5CC95F33D0D637524FF8F /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 0005C44BB0F2175AE7EC4054 /* PrivacyInfo.xcprivacy */; };
 		7869B255E1F22F7BC4178FEE /* PlayerStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE41E195F48337C720701C1D /* PlayerStore.swift */; };
 		88BABA5867DDE9128F13F8B3 /* AccountStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35C7DE0B00BA08F5148F2A26 /* AccountStore.swift */; };
 		8FA8C6051D38DAEE56231190 /* SelfRadioSecrets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DCD8FFE606E22EF5D91681F /* SelfRadioSecrets.swift */; };
 		A3994A65A300FFB6DF4D672A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 42EAC488F8A328B9C51698FC /* Assets.xcassets */; };
 		CB7FDB5C80503EFFDCD02C9E /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4552686E7DE0F4FFFBBE7CE7 /* RootView.swift */; };
+		CD13039B3399782B3CD71CDC /* CalendarDisguiseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3E911FC1BF7D82F7FC7F05A /* CalendarDisguiseView.swift */; };
 		DD9D934557C67445E631D70F /* PlatformService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FE396DD7EFC96CEDCC2E03 /* PlatformService.swift */; };
 		E81F5399D7406D0E6E8A2FC2 /* SelfRadioIOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35C9AF334EE05D72597C17FC /* SelfRadioIOSApp.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		0005C44BB0F2175AE7EC4054 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		1DCD8FFE606E22EF5D91681F /* SelfRadioSecrets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelfRadioSecrets.swift; sourceTree = "<group>"; };
 		35C7DE0B00BA08F5148F2A26 /* AccountStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountStore.swift; sourceTree = "<group>"; };
 		35C9AF334EE05D72597C17FC /* SelfRadioIOSApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelfRadioIOSApp.swift; sourceTree = "<group>"; };
 		42EAC488F8A328B9C51698FC /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		4552686E7DE0F4FFFBBE7CE7 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
+		A3E911FC1BF7D82F7FC7F05A /* CalendarDisguiseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarDisguiseView.swift; sourceTree = "<group>"; };
 		B4FE396DD7EFC96CEDCC2E03 /* PlatformService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlatformService.swift; sourceTree = "<group>"; };
+		BBC3C718A4570EB9DCF166BB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		BE41E195F48337C720701C1D /* PlayerStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerStore.swift; sourceTree = "<group>"; };
 		CBECF8E2287910EDA1CC6787 /* QQLoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QQLoginView.swift; sourceTree = "<group>"; };
-		CC9281332C3F45CFCCF29590 /* SelfRadioIOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SelfRadioIOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		CC9281332C3F45CFCCF29590 /* SelfRadioIOS.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = SelfRadioIOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DA5DE323B65C0B6616713D17 /* SelfRadioSecrets.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = SelfRadioSecrets.xcconfig; sourceTree = "<group>"; };
 		E205C4D3D42ABCA2665C8964 /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -55,9 +60,12 @@
 			children = (
 				35C7DE0B00BA08F5148F2A26 /* AccountStore.swift */,
 				42EAC488F8A328B9C51698FC /* Assets.xcassets */,
+				A3E911FC1BF7D82F7FC7F05A /* CalendarDisguiseView.swift */,
+				BBC3C718A4570EB9DCF166BB /* Info.plist */,
 				E205C4D3D42ABCA2665C8964 /* Models.swift */,
 				B4FE396DD7EFC96CEDCC2E03 /* PlatformService.swift */,
 				BE41E195F48337C720701C1D /* PlayerStore.swift */,
+				0005C44BB0F2175AE7EC4054 /* PrivacyInfo.xcprivacy */,
 				CBECF8E2287910EDA1CC6787 /* QQLoginView.swift */,
 				4552686E7DE0F4FFFBBE7CE7 /* RootView.swift */,
 				35C9AF334EE05D72597C17FC /* SelfRadioIOSApp.swift */,
@@ -106,6 +114,7 @@
 				LastUpgradeCheck = 1430;
 				TargetAttributes = {
 					C7D47075203A9BE759D8EE1D = {
+						DevelopmentTeam = LPV2RX8PL3;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -135,6 +144,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A3994A65A300FFB6DF4D672A /* Assets.xcassets in Resources */,
+				4BA5CC95F33D0D637524FF8F /* PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -146,6 +156,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				88BABA5867DDE9128F13F8B3 /* AccountStore.swift in Sources */,
+				CD13039B3399782B3CD71CDC /* CalendarDisguiseView.swift in Sources */,
 				300BB8F653AEB0C978A6C7DB /* Models.swift in Sources */,
 				DD9D934557C67445E631D70F /* PlatformService.swift in Sources */,
 				7869B255E1F22F7BC4178FEE /* PlayerStore.swift in Sources */,
@@ -163,25 +174,28 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = DA5DE323B65C0B6616713D17 /* SelfRadioSecrets.xcconfig */;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_IDENTITY = "Apple Development";
+				
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 20260833;
 				DEVELOPMENT_TEAM = LPV2RX8PL3;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = SelfRadioIOS/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = "随心听";
+				INFOPLIST_KEY_CFBundleDisplayName = "万年历";
 				INFOPLIST_KEY_NSAppTransportSecurity_NSAllowsLocalNetworking = YES;
 				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "保存 QQ 音乐登录二维码，便于同一部手机从 QQ 相册识别登录";
 				INFOPLIST_KEY_SelfRadioAPIBaseURL = "$(SELF_RADIO_API_BASE_URL)";
 				INFOPLIST_KEY_SelfRadioAPIToken = "$(SELF_RADIO_API_TOKEN)";
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = cn.remjdor.selfradio;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				COMPRESS_PNG_FILES = NO;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = 1;
 			};
@@ -254,25 +268,28 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = DA5DE323B65C0B6616713D17 /* SelfRadioSecrets.xcconfig */;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_IDENTITY = "Apple Development";
+				
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 20260833;
 				DEVELOPMENT_TEAM = LPV2RX8PL3;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = SelfRadioIOS/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = "随心听";
+				INFOPLIST_KEY_CFBundleDisplayName = "万年历";
 				INFOPLIST_KEY_NSAppTransportSecurity_NSAllowsLocalNetworking = YES;
 				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "保存 QQ 音乐登录二维码，便于同一部手机从 QQ 相册识别登录";
 				INFOPLIST_KEY_SelfRadioAPIBaseURL = "$(SELF_RADIO_API_BASE_URL)";
 				INFOPLIST_KEY_SelfRadioAPIToken = "$(SELF_RADIO_API_TOKEN)";
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = cn.remjdor.selfradio;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				COMPRESS_PNG_FILES = NO;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = 1;
 			};

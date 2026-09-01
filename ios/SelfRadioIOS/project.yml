@@ -20,8 +20,9 @@ targets:
         PRODUCT_BUNDLE_IDENTIFIER: cn.remjdor.selfradio
         DEVELOPMENT_TEAM: LPV2RX8PL3
         CODE_SIGN_STYLE: Automatic
-        CODE_SIGN_IDENTITY: "Apple Development"
-        INFOPLIST_KEY_CFBundleDisplayName: 随心听
+        MARKETING_VERSION: "1.0"
+        CURRENT_PROJECT_VERSION: "20260828"
+        INFOPLIST_KEY_CFBundleDisplayName: 万年历
         INFOPLIST_KEY_SelfRadioAPIBaseURL: $(SELF_RADIO_API_BASE_URL)
         INFOPLIST_KEY_SelfRadioAPIToken: $(SELF_RADIO_API_TOKEN)
         INFOPLIST_KEY_UILaunchScreen_Generation: YES
